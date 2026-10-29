@@ -1,0 +1,63 @@
+# GitHub composite action: build agentgate, compare baseline and candidate
+# results, post the report as a PR comment, fail the job on a regression.
+# Not exercised on GitHub from this repo (no CI runner was available); the
+# command it runs is the same `agentgate compare` used in results/.
+name: AgentGate
+description: Gate a PR on agent eval results with a paired, task-clustered test
+inputs:
+  base:
+    description: baseline results file (from main)
+    required: true
+  candidate:
+    description: candidate results file (from the PR)
+    required: true
+  format:
+    description: tau2 | run
+    default: tau2
+  alpha:
+    default: "0.05"
+  fail-margin:
+    default: "0"
+  pass-margin:
+    default: "0.05"
+  comment:
+    description: post the report on the pull request
+    default: "true"
+outputs:
+  verdict:
+    description: PASS, FAIL or INCONCLUSIVE
+    value: ${{ steps.gate.outputs.verdict }}
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-go@v5
+      with:
+        go-version: "1.24"
+    - name: build
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: go build -o "$RUNNER_TEMP/agentgate" ./cmd/agentgate
+    - name: compare
+      id: gate
+      shell: bash
+      run: |
+        set +e
+        "$RUNNER_TEMP/agentgate" compare -format "${{ inputs.format }}" \
+          -base "${{ inputs.base }}" -cand "${{ inputs.candidate }}" \
+          -alpha "${{ inputs.alpha }}" -fail-margin "${{ inputs.fail-margin }}" -pass-margin "${{ inputs.pass-margin }}" \
+          -md "$RUNNER_TEMP/agentgate.md" -json "$RUNNER_TEMP/agentgate.json" > /dev/null
+        code=$?
+        echo "exit=$code" >> "$GITHUB_OUTPUT"
+        echo "verdict=$(jq -r .verdict "$RUNNER_TEMP/agentgate.json")" >> "$GITHUB_OUTPUT"
+        cat "$RUNNER_TEMP/agentgate.md" >> "$GITHUB_STEP_SUMMARY"
+    - name: comment
+      if: inputs.comment == 'true' && github.event_name == 'pull_request'
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        gh pr comment "${{ github.event.pull_request.number }}" --edit-last --body-file "$RUNNER_TEMP/agentgate.md" \
+          || gh pr comment "${{ github.event.pull_request.number }}" --body-file "$RUNNER_TEMP/agentgate.md"
+    - name: verdict
+      shell: bash
+      run: exit ${{ steps.gate.outputs.exit }}

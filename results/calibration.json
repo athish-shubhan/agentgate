@@ -1,0 +1,1092 @@
+{
+  "aa": [
+    {
+      "file": "claude-3-7-sonnet-20250219_airline_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 50,
+      "pass_rate": 0.5,
+      "reps": 400,
+      "false_fail_paired": 0.035,
+      "false_fail_naive": 0.005,
+      "pass_paired": 0.2775
+    },
+    {
+      "file": "claude-3-7-sonnet-20250219_retail_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.7872807017543859,
+      "reps": 400,
+      "false_fail_paired": 0.0575,
+      "false_fail_naive": 0.0225,
+      "pass_paired": 0.5225
+    },
+    {
+      "file": "claude-3-7-sonnet-20250219_telecom_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.4934210526315789,
+      "reps": 400,
+      "false_fail_paired": 0.0275,
+      "false_fail_naive": 0.0025,
+      "pass_paired": 0.4925
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_airline_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 50,
+      "pass_rate": 0.56,
+      "reps": 400,
+      "false_fail_paired": 0.0425,
+      "false_fail_naive": 0.005,
+      "pass_paired": 0.315
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_retail_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.7412280701754386,
+      "reps": 400,
+      "false_fail_paired": 0.035,
+      "false_fail_naive": 0.0125,
+      "pass_paired": 0.51
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_telecom-workflow_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.5175438596491229,
+      "reps": 400,
+      "false_fail_paired": 0.0425,
+      "false_fail_naive": 0.005,
+      "pass_paired": 0.545
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_telecom-workflow_no-user-op_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.7478070175438597,
+      "reps": 400,
+      "false_fail_paired": 0.06,
+      "false_fail_naive": 0.0025,
+      "pass_paired": 0.47
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_telecom-workflow_no-user_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.6842105263157895,
+      "reps": 400,
+      "false_fail_paired": 0.04,
+      "false_fail_naive": 0.005,
+      "pass_paired": 0.5875
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_telecom-workflow_op_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.5657894736842105,
+      "reps": 400,
+      "false_fail_paired": 0.0425,
+      "false_fail_naive": 0.005,
+      "pass_paired": 0.59
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_telecom_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.34210526315789475,
+      "reps": 400,
+      "false_fail_paired": 0.0575,
+      "false_fail_naive": 0.0075,
+      "pass_paired": 0.5925
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_telecom_no-user-op_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.7214912280701754,
+      "reps": 400,
+      "false_fail_paired": 0.0675,
+      "false_fail_naive": 0.01,
+      "pass_paired": 0.4825
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_telecom_no-user_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.5153508771929824,
+      "reps": 400,
+      "false_fail_paired": 0.0575,
+      "false_fail_naive": 0.005,
+      "pass_paired": 0.47
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_telecom_op_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.7280701754385965,
+      "reps": 400,
+      "false_fail_paired": 0.05,
+      "false_fail_naive": 0.0025,
+      "pass_paired": 0.6425
+    },
+    {
+      "file": "gpt-4.1-mini-2025-04-14_airline_base_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 50,
+      "pass_rate": 0.505,
+      "reps": 400,
+      "false_fail_paired": 0.05,
+      "false_fail_naive": 0.005,
+      "pass_paired": 0.3325
+    },
+    {
+      "file": "gpt-4.1-mini-2025-04-14_retail_base_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.6600877192982456,
+      "reps": 400,
+      "false_fail_paired": 0.045,
+      "false_fail_naive": 0.02,
+      "pass_paired": 0.44
+    },
+    {
+      "file": "gpt-4.1-mini-2025-04-14_telecom_base_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.43859649122807015,
+      "reps": 400,
+      "false_fail_paired": 0.05,
+      "false_fail_naive": 0.015,
+      "pass_paired": 0.435
+    },
+    {
+      "file": "o4-mini-2025-04-16_airline_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 50,
+      "pass_rate": 0.59,
+      "reps": 400,
+      "false_fail_paired": 0.035,
+      "false_fail_naive": 0.0125,
+      "pass_paired": 0.275
+    },
+    {
+      "file": "o4-mini-2025-04-16_retail_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.7149122807017544,
+      "reps": 400,
+      "false_fail_paired": 0.0575,
+      "false_fail_naive": 0.0275,
+      "pass_paired": 0.45
+    },
+    {
+      "file": "o4-mini-2025-04-16_telecom-workflow_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.5942982456140351,
+      "reps": 400,
+      "false_fail_paired": 0.035,
+      "false_fail_naive": 0.0025,
+      "pass_paired": 0.47
+    },
+    {
+      "file": "o4-mini-2025-04-16_telecom-workflow_no-user-op_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.9035087719298246,
+      "reps": 400,
+      "false_fail_paired": 0.05,
+      "false_fail_naive": 0.0125,
+      "pass_paired": 0.6225
+    },
+    {
+      "file": "o4-mini-2025-04-16_telecom-workflow_no-user_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.7214912280701754,
+      "reps": 400,
+      "false_fail_paired": 0.0475,
+      "false_fail_naive": 0.0125,
+      "pass_paired": 0.4875
+    },
+    {
+      "file": "o4-mini-2025-04-16_telecom-workflow_op_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.8793859649122807,
+      "reps": 400,
+      "false_fail_paired": 0.045,
+      "false_fail_naive": 0.0175,
+      "pass_paired": 0.635
+    },
+    {
+      "file": "o4-mini-2025-04-16_telecom_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.42105263157894735,
+      "reps": 400,
+      "false_fail_paired": 0.045,
+      "false_fail_naive": 0.01,
+      "pass_paired": 0.565
+    },
+    {
+      "file": "o4-mini-2025-04-16_telecom_no-user-op_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.9890350877192983,
+      "reps": 400,
+      "false_fail_paired": 0.035,
+      "false_fail_naive": 0.035,
+      "pass_paired": 0.965
+    },
+    {
+      "file": "o4-mini-2025-04-16_telecom_no-user_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.6732456140350878,
+      "reps": 400,
+      "false_fail_paired": 0.03,
+      "false_fail_naive": 0,
+      "pass_paired": 0.93
+    },
+    {
+      "file": "o4-mini-2025-04-16_telecom_op_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass_rate": 0.9627192982456141,
+      "reps": 400,
+      "false_fail_paired": 0.0775,
+      "false_fail_naive": 0.07,
+      "pass_paired": 0.875
+    }
+  ],
+  "alpha": 0.05,
+  "fail_margin": 0,
+  "files": 26,
+  "injections": [
+    {
+      "file": "gpt-4.1-2025-04-14_retail_default_gpt-4.1-2025-04-14_4trials.json",
+      "injection": "tool schema change breaks exchange_* (all affected trials fail)",
+      "affected_tasks": 29,
+      "true_drop_points": 18.804824561403457,
+      "reps": 400,
+      "power_paired": 1,
+      "power_naive": 1,
+      "sequential_power": 1,
+      "sequential_mean_trials_per_task": 1.045,
+      "fixed_trials_per_task": 2
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_retail_default_gpt-4.1-2025-04-14_4trials.json",
+      "injection": "dropped policy line: return_* tasks fail half the time",
+      "affected_tasks": 32,
+      "true_drop_points": 11.225877192982487,
+      "reps": 400,
+      "power_paired": 0.96,
+      "power_naive": 0.8975,
+      "sequential_power": 0.9575,
+      "sequential_mean_trials_per_task": 1.5375,
+      "fixed_trials_per_task": 2
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_retail_default_gpt-4.1-2025-04-14_4trials.json",
+      "injection": "weaker model: random 20% of tasks fail half the time",
+      "affected_tasks": 22.6675,
+      "true_drop_points": 7.291666666666649,
+      "reps": 400,
+      "power_paired": 0.6925,
+      "power_naive": 0.52,
+      "sequential_power": 0.6975,
+      "sequential_mean_trials_per_task": 1.805,
+      "fixed_trials_per_task": 2
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_retail_default_gpt-4.1-2025-04-14_4trials.json",
+      "injection": "subtle: random 10% of tasks fail a quarter of the time",
+      "affected_tasks": 11.245,
+      "true_drop_points": 1.8037280701754372,
+      "reps": 400,
+      "power_paired": 0.1275,
+      "power_naive": 0.0275,
+      "sequential_power": 0.135,
+      "sequential_mean_trials_per_task": 1.905,
+      "fixed_trials_per_task": 2
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_airline_default_gpt-4.1-2025-04-14_4trials.json",
+      "injection": "weaker model: random 20% of tasks fail half the time",
+      "affected_tasks": 8.5725,
+      "true_drop_points": 4.2549999999999875,
+      "reps": 400,
+      "power_paired": 0.1825,
+      "power_naive": 0.0575,
+      "sequential_power": 0.19,
+      "sequential_mean_trials_per_task": 1.9425,
+      "fixed_trials_per_task": 2
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_airline_default_gpt-4.1-2025-04-14_4trials.json",
+      "injection": "subtle: random 10% of tasks fail a quarter of the time",
+      "affected_tasks": 4.27,
+      "true_drop_points": 1.0474999999999952,
+      "reps": 400,
+      "power_paired": 0.0625,
+      "power_naive": 0.01,
+      "sequential_power": 0.0725,
+      "sequential_mean_trials_per_task": 1.92,
+      "fixed_trials_per_task": 2
+    }
+  ],
+  "pass_margin": 0.05,
+  "power_curves_retail_gpt41": {
+    "drop_10_points_all_tasks": [
+      {
+        "trials_per_task": 1,
+        "power_fixed": 0.6425,
+        "false_alarm_fixed": 0.0475,
+        "pass_rate_when_nothing_changed": 0.2475,
+        "power_sequential": 0.6425,
+        "false_alarm_sequential": 0.0475,
+        "mean_trials_sequential_with_drop": 1,
+        "mean_trials_sequential_no_change": 1
+      },
+      {
+        "trials_per_task": 2,
+        "power_fixed": 0.865,
+        "false_alarm_fixed": 0.0575,
+        "pass_rate_when_nothing_changed": 0.425,
+        "power_sequential": 0.8675,
+        "false_alarm_sequential": 0.0525,
+        "mean_trials_sequential_with_drop": 1.6275,
+        "mean_trials_sequential_no_change": 1.9175
+      },
+      {
+        "trials_per_task": 4,
+        "power_fixed": 0.98,
+        "false_alarm_fixed": 0.045,
+        "pass_rate_when_nothing_changed": 0.6475,
+        "power_sequential": 0.98,
+        "false_alarm_sequential": 0.05,
+        "mean_trials_sequential_with_drop": 2.435,
+        "mean_trials_sequential_no_change": 3.3525
+      },
+      {
+        "trials_per_task": 8,
+        "power_fixed": 1,
+        "false_alarm_fixed": 0.045,
+        "pass_rate_when_nothing_changed": 0.8925,
+        "power_sequential": 1,
+        "false_alarm_sequential": 0.05,
+        "mean_trials_sequential_with_drop": 3.135,
+        "mean_trials_sequential_no_change": 5.525
+      },
+      {
+        "trials_per_task": 16,
+        "power_fixed": 1,
+        "false_alarm_fixed": 0.0575,
+        "pass_rate_when_nothing_changed": 0.9425,
+        "power_sequential": 1,
+        "false_alarm_sequential": 0.035,
+        "mean_trials_sequential_with_drop": 4.3775,
+        "mean_trials_sequential_no_change": 7.7325
+      }
+    ],
+    "drop_5_points_all_tasks": [
+      {
+        "trials_per_task": 1,
+        "power_fixed": 0.3,
+        "false_alarm_fixed": 0.0475,
+        "pass_rate_when_nothing_changed": 0.2475,
+        "power_sequential": 0.3025,
+        "false_alarm_sequential": 0.0475,
+        "mean_trials_sequential_with_drop": 1,
+        "mean_trials_sequential_no_change": 1
+      },
+      {
+        "trials_per_task": 2,
+        "power_fixed": 0.4,
+        "false_alarm_fixed": 0.0575,
+        "pass_rate_when_nothing_changed": 0.425,
+        "power_sequential": 0.4,
+        "false_alarm_sequential": 0.0525,
+        "mean_trials_sequential_with_drop": 1.9075,
+        "mean_trials_sequential_no_change": 1.9175
+      },
+      {
+        "trials_per_task": 4,
+        "power_fixed": 0.6175,
+        "false_alarm_fixed": 0.045,
+        "pass_rate_when_nothing_changed": 0.6475,
+        "power_sequential": 0.59,
+        "false_alarm_sequential": 0.05,
+        "mean_trials_sequential_with_drop": 3.4325,
+        "mean_trials_sequential_no_change": 3.3525
+      },
+      {
+        "trials_per_task": 8,
+        "power_fixed": 0.8875,
+        "false_alarm_fixed": 0.045,
+        "pass_rate_when_nothing_changed": 0.8925,
+        "power_sequential": 0.875,
+        "false_alarm_sequential": 0.05,
+        "mean_trials_sequential_with_drop": 5.4475,
+        "mean_trials_sequential_no_change": 5.525
+      },
+      {
+        "trials_per_task": 16,
+        "power_fixed": 0.99,
+        "false_alarm_fixed": 0.0575,
+        "pass_rate_when_nothing_changed": 0.9425,
+        "power_sequential": 0.9725,
+        "false_alarm_sequential": 0.035,
+        "mean_trials_sequential_with_drop": 8.1175,
+        "mean_trials_sequential_no_change": 7.7325
+      }
+    ]
+  },
+  "reliability": [
+    {
+      "file": "claude-3-7-sonnet-20250219_airline_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 50,
+      "pass1": 0.5,
+      "pass_k": [
+        0.5,
+        0.41,
+        0.375,
+        0.36
+      ],
+      "mixed_task_share": 0.32,
+      "test_retest_kappa": 0.640254372019078,
+      "agent_cost_usd_per_trial": 0.34915455000000006,
+      "seconds_per_trial": 63.94632796846465,
+      "infra_trials": 0,
+      "trials": 200
+    },
+    {
+      "file": "claude-3-7-sonnet-20250219_retail_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.7872807017543859,
+      "pass_k": [
+        0.7872807017543859,
+        0.692982456140351,
+        0.6337719298245614,
+        0.5964912280701754
+      ],
+      "mixed_task_share": 0.3333333333333333,
+      "test_retest_kappa": 0.43622729704688146,
+      "agent_cost_usd_per_trial": 0.3345586052631576,
+      "seconds_per_trial": 61.291431690644636,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "claude-3-7-sonnet-20250219_telecom_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.4934210526315789,
+      "pass_k": [
+        0.4934210526315789,
+        0.37426900584795325,
+        0.30701754385964913,
+        0.2543859649122807
+      ],
+      "mixed_task_share": 0.4473684210526316,
+      "test_retest_kappa": 0.5239588802841261,
+      "agent_cost_usd_per_trial": 0.5816542105263158,
+      "seconds_per_trial": 117.73832259775865,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_airline_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 50,
+      "pass1": 0.56,
+      "pass_k": [
+        0.56,
+        0.4566666666666668,
+        0.42,
+        0.4
+      ],
+      "mixed_task_share": 0.38,
+      "test_retest_kappa": 0.5805850397884663,
+      "agent_cost_usd_per_trial": 0.053542139999999995,
+      "seconds_per_trial": 65.26042696001969,
+      "infra_trials": 0,
+      "trials": 200
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_retail_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.7412280701754386,
+      "pass_k": [
+        0.7412280701754386,
+        0.6418128654970761,
+        0.5789473684210527,
+        0.5263157894736842
+      ],
+      "mixed_task_share": 0.37719298245614036,
+      "test_retest_kappa": 0.4815785209279598,
+      "agent_cost_usd_per_trial": 0.05815682894736841,
+      "seconds_per_trial": 63.327639470530556,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_telecom-workflow_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.5175438596491229,
+      "pass_k": [
+        0.5175438596491229,
+        0.4122807017543859,
+        0.3684210526315789,
+        0.34210526315789475
+      ],
+      "mixed_task_share": 0.38596491228070173,
+      "test_retest_kappa": 0.5784498902489038,
+      "agent_cost_usd_per_trial": 0.10146159649122805,
+      "seconds_per_trial": 112.75084658853966,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_telecom-workflow_no-user-op_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.7478070175438597,
+      "pass_k": [
+        0.7478070175438597,
+        0.6505847953216375,
+        0.5942982456140351,
+        0.5614035087719298
+      ],
+      "mixed_task_share": 0.34210526315789475,
+      "test_retest_kappa": 0.4847409404013178,
+      "agent_cost_usd_per_trial": 0.09622192543859648,
+      "seconds_per_trial": 62.57123686227498,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_telecom-workflow_no-user_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.6842105263157895,
+      "pass_k": [
+        0.6842105263157895,
+        0.600877192982456,
+        0.5548245614035088,
+        0.5263157894736842
+      ],
+      "mixed_task_share": 0.2982456140350877,
+      "test_retest_kappa": 0.6136997846972191,
+      "agent_cost_usd_per_trial": 0.09224782456140349,
+      "seconds_per_trial": 70.79446245256565,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_telecom-workflow_op_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.5657894736842105,
+      "pass_k": [
+        0.5657894736842105,
+        0.48099415204678353,
+        0.43201754385964913,
+        0.39473684210526316
+      ],
+      "mixed_task_share": 0.3157894736842105,
+      "test_retest_kappa": 0.6551496714844439,
+      "agent_cost_usd_per_trial": 0.07820485087719296,
+      "seconds_per_trial": 93.74756946446047,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_telecom_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.34210526315789475,
+      "pass_k": [
+        0.34210526315789475,
+        0.25877192982456143,
+        0.21929824561403508,
+        0.19298245614035087
+      ],
+      "mixed_task_share": 0.30701754385964913,
+      "test_retest_kappa": 0.629909843728864,
+      "agent_cost_usd_per_trial": 0.10995707894736843,
+      "seconds_per_trial": 118.64741408808378,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_telecom_no-user-op_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.7214912280701754,
+      "pass_k": [
+        0.7214912280701754,
+        0.6257309941520467,
+        0.5877192982456141,
+        0.5701754385964912
+      ],
+      "mixed_task_share": 0.34210526315789475,
+      "test_retest_kappa": 0.5238273830334574,
+      "agent_cost_usd_per_trial": 0.08727227192982456,
+      "seconds_per_trial": 51.54745390304117,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_telecom_no-user_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.5153508771929824,
+      "pass_k": [
+        0.5153508771929824,
+        0.40350877192982443,
+        0.35526315789473684,
+        0.32456140350877194
+      ],
+      "mixed_task_share": 0.41228070175438597,
+      "test_retest_kappa": 0.5536332450811612,
+      "agent_cost_usd_per_trial": 0.08531784210526319,
+      "seconds_per_trial": 63.615835986482445,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "gpt-4.1-2025-04-14_telecom_op_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.7280701754385965,
+      "pass_k": [
+        0.7280701754385965,
+        0.6549707602339183,
+        0.6162280701754386,
+        0.5877192982456141
+      ],
+      "mixed_task_share": 0.2719298245614035,
+      "test_retest_kappa": 0.6308543587645331,
+      "agent_cost_usd_per_trial": 0.07638541228070174,
+      "seconds_per_trial": 80.28232548493045,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "gpt-4.1-mini-2025-04-14_airline_base_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 50,
+      "pass1": 0.505,
+      "pass_k": [
+        0.505,
+        0.39333333333333337,
+        0.32,
+        0.26
+      ],
+      "mixed_task_share": 0.42,
+      "test_retest_kappa": 0.5533333333333333,
+      "agent_cost_usd_per_trial": 0.012559700000000002,
+      "seconds_per_trial": 70.39619418350482,
+      "infra_trials": 0,
+      "trials": 200
+    },
+    {
+      "file": "gpt-4.1-mini-2025-04-14_retail_base_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.6600877192982456,
+      "pass_k": [
+        0.6600877192982456,
+        0.5292397660818712,
+        0.44298245614035087,
+        0.38596491228070173
+      ],
+      "mixed_task_share": 0.4649122807017544,
+      "test_retest_kappa": 0.4168411267321324,
+      "agent_cost_usd_per_trial": 0.013704835964912277,
+      "seconds_per_trial": 68.75385010278751,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "gpt-4.1-mini-2025-04-14_telecom_base_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.43859649122807015,
+      "pass_k": [
+        0.43859649122807015,
+        0.29824561403508776,
+        0.2236842105263158,
+        0.17543859649122806
+      ],
+      "mixed_task_share": 0.5087719298245614,
+      "test_retest_kappa": 0.4305656480177324,
+      "agent_cost_usd_per_trial": 0.04603994912280701,
+      "seconds_per_trial": 204.04187564391862,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "o4-mini-2025-04-16_airline_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 50,
+      "pass1": 0.59,
+      "pass_k": [
+        0.59,
+        0.48333333333333334,
+        0.42,
+        0.38
+      ],
+      "mixed_task_share": 0.38,
+      "test_retest_kappa": 0.5607660515461091,
+      "agent_cost_usd_per_trial": 0.05048396100000001,
+      "seconds_per_trial": 75.16235861041997,
+      "infra_trials": 0,
+      "trials": 200
+    },
+    {
+      "file": "o4-mini-2025-04-16_retail_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.7149122807017544,
+      "pass_k": [
+        0.7149122807017544,
+        0.5935672514619882,
+        0.5175438596491229,
+        0.45614035087719296
+      ],
+      "mixed_task_share": 0.45614035087719296,
+      "test_retest_kappa": 0.40386899262602904,
+      "agent_cost_usd_per_trial": 0.057303209429824545,
+      "seconds_per_trial": 78.97614096005057,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "o4-mini-2025-04-16_telecom-workflow_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.5942982456140351,
+      "pass_k": [
+        0.5942982456140351,
+        0.4912280701754385,
+        0.43640350877192985,
+        0.39473684210526316
+      ],
+      "mixed_task_share": 0.38596491228070173,
+      "test_retest_kappa": 0.573035606232365,
+      "agent_cost_usd_per_trial": 0.057542022807017534,
+      "seconds_per_trial": 92.31188829018406,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "o4-mini-2025-04-16_telecom-workflow_no-user-op_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.9035087719298246,
+      "pass_k": [
+        0.9035087719298246,
+        0.8421052631578949,
+        0.7982456140350878,
+        0.7631578947368421
+      ],
+      "mixed_task_share": 0.22807017543859648,
+      "test_retest_kappa": 0.29491602610316264,
+      "agent_cost_usd_per_trial": 0.05692870043859652,
+      "seconds_per_trial": 65.94684467368641,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "o4-mini-2025-04-16_telecom-workflow_no-user_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.7214912280701754,
+      "pass_k": [
+        0.7214912280701754,
+        0.6154970760233919,
+        0.5526315789473685,
+        0.5087719298245614
+      ],
+      "mixed_task_share": 0.38596491228070173,
+      "test_retest_kappa": 0.4738235990036463,
+      "agent_cost_usd_per_trial": 0.07542563706140343,
+      "seconds_per_trial": 97.7463544980548,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "o4-mini-2025-04-16_telecom-workflow_op_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.8793859649122807,
+      "pass_k": [
+        0.8793859649122807,
+        0.8040935672514621,
+        0.7521929824561403,
+        0.7105263157894737
+      ],
+      "mixed_task_share": 0.2807017543859649,
+      "test_retest_kappa": 0.284608211601878,
+      "agent_cost_usd_per_trial": 0.034923251096491185,
+      "seconds_per_trial": 63.256877675609616,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "o4-mini-2025-04-16_telecom_default_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.42105263157894735,
+      "pass_k": [
+        0.42105263157894735,
+        0.3289473684210527,
+        0.28728070175438597,
+        0.2631578947368421
+      ],
+      "mixed_task_share": 0.3333333333333333,
+      "test_retest_kappa": 0.6223953543387472,
+      "agent_cost_usd_per_trial": 0.0922305348684211,
+      "seconds_per_trial": 191.19702286286397,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "o4-mini-2025-04-16_telecom_no-user-op_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.9890350877192983,
+      "pass_k": [
+        0.9890350877192983,
+        0.9780701754385965,
+        0.9671052631578947,
+        0.956140350877193
+      ],
+      "mixed_task_share": 0.043859649122807015,
+      "test_retest_kappa": -0.01034193852437651,
+      "agent_cost_usd_per_trial": 0.05601748070175436,
+      "seconds_per_trial": 64.65932334729378,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "o4-mini-2025-04-16_telecom_no-user_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.6732456140350878,
+      "pass_k": [
+        0.6732456140350878,
+        0.6461988304093568,
+        0.625,
+        0.6052631578947368
+      ],
+      "mixed_task_share": 0.10526315789473684,
+      "test_retest_kappa": 0.876977949955898,
+      "agent_cost_usd_per_trial": 0.07049687236842102,
+      "seconds_per_trial": 93.44135160813386,
+      "infra_trials": 0,
+      "trials": 456
+    },
+    {
+      "file": "o4-mini-2025-04-16_telecom_op_gpt-4.1-2025-04-14_4trials.json",
+      "tasks": 114,
+      "pass1": 0.9627192982456141,
+      "pass_k": [
+        0.9627192982456141,
+        0.9312865497076025,
+        0.9057017543859649,
+        0.8859649122807017
+      ],
+      "mixed_task_share": 0.11403508771929824,
+      "test_retest_kappa": 0.11039485413063853,
+      "agent_cost_usd_per_trial": 0.03492545833333332,
+      "seconds_per_trial": 58.810510457339916,
+      "infra_trials": 0,
+      "trials": 456
+    }
+  ],
+  "rule_validity_default_mode_files": [
+    {
+      "rule": "flag:transfer_to_human_agents",
+      "trials_fired": 1956,
+      "trials": 5360,
+      "fail_rate_when_fired": 0.6809815950920245,
+      "fail_rate_otherwise": 0.2917156286721504
+    },
+    {
+      "rule": "loop",
+      "trials_fired": 576,
+      "trials": 5360,
+      "fail_rate_when_fired": 0.6597222222222222,
+      "fail_rate_otherwise": 0.4065635451505017
+    },
+    {
+      "rule": "max_steps",
+      "trials_fired": 36,
+      "trials": 5360,
+      "fail_rate_when_fired": 1,
+      "fail_rate_otherwise": 0.42993989481592787
+    },
+    {
+      "rule": "step_budget",
+      "trials_fired": 207,
+      "trials": 5360,
+      "fail_rate_when_fired": 0.8260869565217391,
+      "fail_rate_otherwise": 0.4180089268387347
+    },
+    {
+      "rule": "tool_errors",
+      "trials_fired": 85,
+      "trials": 5360,
+      "fail_rate_when_fired": 0.6705882352941176,
+      "fail_rate_otherwise": 0.42995260663507107
+    },
+    {
+      "rule": "write_without_confirmation",
+      "trials_fired": 883,
+      "trials": 5360,
+      "fail_rate_when_fired": 0.5243488108720272,
+      "fail_rate_otherwise": 0.41590350681259775
+    }
+  ],
+  "swaps": [
+    {
+      "pair": "gpt-4.1-2025-04-14/retail -\u003e gpt-4.1-mini-2025-04-14/retail",
+      "suite": "retail",
+      "rate_a": 0.7412280701754386,
+      "rate_b": 0.6600877192982456,
+      "verdict_full_data": "FAIL",
+      "ci_low": -0.12451608590761785,
+      "ci_high": -0.037764615846768115,
+      "fail_rate_by_trials": {
+        "1": 0.3975,
+        "2": 0.405,
+        "4": 0.915
+      },
+      "naive_fail_rate_by_trials": {
+        "1": 0.195,
+        "2": 0.1875,
+        "4": 0.86
+      },
+      "markdown": "### AgentGate: FAIL (regression)\n\n`gpt-4.1-2025-04-14/retail` vs `gpt-4.1-mini-2025-04-14/retail` on 114 tasks. Pass rate 74.1% -\u003e 66.0% (-8.1 points, 90% CI -12.5 to -3.8, one-sided p = 0.00121).\n\nRule: FAIL if the whole interval is below 0.0 points; PASS if it is entirely above -5.0 points; otherwise INCONCLUSIVE. With these tasks the smallest drop detectable at 80% power is 6.5 points.\n\n| suite | tasks | A | B | diff | CI |\n|---|---|---|---|---|---|\n| retail | 114 | 74.1% | 66.0% | -8.1 | -12.5 to -3.8 |\n\n|  | pass^1 | pass^2 | pass^3 | pass^4 |\n| --- | --- | --- | --- | --- |\n| A | 0.741 | 0.642 | 0.579 | 0.526 |\n| B | 0.660 | 0.529 | 0.443 | 0.386 |\n\n**13 tasks got worse by more than 25 points** (6 got better). New behaviour in their failures: `loop` in 1.\n\n| task | A | B | new in B's failures |\n|---|---|---|---|\n| retail/103 | 75% | 0% | loop |\n| retail/104 | 75% | 0% |  |\n| retail/111 | 75% | 0% |  |\n| retail/16 | 100% | 25% |  |\n| retail/71 | 75% | 0% |  |\n| retail/109 | 50% | 0% |  |\n| retail/33 | 100% | 50% |  |\n| retail/54 | 100% | 50% |  |\n| retail/63 | 100% | 50% |  |\n| retail/7 | 100% | 50% |  |\n| ... 3 more | | | |\n\nAgent cost: $26.52 -\u003e $6.25.\n"
+    },
+    {
+      "pair": "claude-3-7-sonnet-20250219/retail -\u003e gpt-4.1-mini-2025-04-14/retail",
+      "suite": "retail",
+      "rate_a": 0.7872807017543859,
+      "rate_b": 0.6600877192982456,
+      "verdict_full_data": "FAIL",
+      "ci_low": -0.18265274445581878,
+      "ci_high": -0.07173322045646194,
+      "fail_rate_by_trials": {
+        "1": 0.71,
+        "2": 0.915,
+        "4": 0.985
+      },
+      "naive_fail_rate_by_trials": {
+        "1": 0.6175,
+        "2": 0.895,
+        "4": 0.99
+      },
+      "markdown": "### AgentGate: FAIL (regression)\n\n`claude-3-7-sonnet-20250219/retail` vs `gpt-4.1-mini-2025-04-14/retail` on 114 tasks. Pass rate 78.7% -\u003e 66.0% (-12.7 points, 90% CI -18.3 to -7.2, one-sided p = 0.000116).\n\nRule: FAIL if the whole interval is below 0.0 points; PASS if it is entirely above -5.0 points; otherwise INCONCLUSIVE. With these tasks the smallest drop detectable at 80% power is 8.3 points.\n\n| suite | tasks | A | B | diff | CI |\n|---|---|---|---|---|---|\n| retail | 114 | 78.7% | 66.0% | -12.7 | -18.3 to -7.2 |\n\n|  | pass^1 | pass^2 | pass^3 | pass^4 |\n| --- | --- | --- | --- | --- |\n| A | 0.787 | 0.693 | 0.634 | 0.596 |\n| B | 0.660 | 0.529 | 0.443 | 0.386 |\n\n**25 tasks got worse by more than 25 points** (8 got better). New behaviour in their failures: `loop` in 2, `tool_errors` in 2.\n\n| task | A | B | new in B's failures |\n|---|---|---|---|\n| retail/103 | 100% | 0% | loop |\n| retail/112 | 100% | 0% |  |\n| retail/2 | 100% | 0% |  |\n| retail/104 | 75% | 0% |  |\n| retail/110 | 100% | 25% |  |\n| retail/111 | 75% | 0% |  |\n| retail/27 | 75% | 0% | loop, tool_errors |\n| retail/4 | 75% | 0% |  |\n| retail/43 | 100% | 25% |  |\n| retail/56 | 75% | 0% |  |\n| ... 15 more | | | |\n\nAgent cost: $152.56 -\u003e $6.25.\n"
+    },
+    {
+      "pair": "o4-mini-2025-04-16/retail -\u003e gpt-4.1-mini-2025-04-14/retail",
+      "suite": "retail",
+      "rate_a": 0.7149122807017544,
+      "rate_b": 0.6600877192982456,
+      "verdict_full_data": "INCONCLUSIVE",
+      "ci_low": -0.11135983071943141,
+      "ci_high": 0.0017107079124138724,
+      "fail_rate_by_trials": {
+        "1": 0.0675,
+        "2": 0.1975,
+        "4": 0.435
+      },
+      "naive_fail_rate_by_trials": {
+        "1": 0.0425,
+        "2": 0.195,
+        "4": 0.495
+      },
+      "markdown": "### AgentGate: INCONCLUSIVE (needs more trials)\n\n`o4-mini-2025-04-16/retail` vs `gpt-4.1-mini-2025-04-14/retail` on 114 tasks. Pass rate 71.5% -\u003e 66.0% (-5.5 points, 90% CI -11.1 to +0.2, one-sided p = 0.0553).\n\nRule: FAIL if the whole interval is below 0.0 points; PASS if it is entirely above -5.0 points; otherwise INCONCLUSIVE. With these tasks the smallest drop detectable at 80% power is 8.5 points.\n\n| suite | tasks | A | B | diff | CI |\n|---|---|---|---|---|---|\n| retail | 114 | 71.5% | 66.0% | -5.5 | -11.1 to +0.2 |\n\n|  | pass^1 | pass^2 | pass^3 | pass^4 |\n| --- | --- | --- | --- | --- |\n| A | 0.715 | 0.594 | 0.518 | 0.456 |\n| B | 0.660 | 0.529 | 0.443 | 0.386 |\n\n**17 tasks got worse by more than 25 points** (10 got better). New behaviour in their failures: `tool_errors` in 3, `loop` in 1.\n\n| task | A | B | new in B's failures |\n|---|---|---|---|\n| retail/2 | 100% | 0% |  |\n| retail/3 | 100% | 0% |  |\n| retail/36 | 100% | 0% | tool_errors |\n| retail/4 | 100% | 0% |  |\n| retail/111 | 75% | 0% |  |\n| retail/16 | 100% | 25% |  |\n| retail/28 | 75% | 0% |  |\n| retail/56 | 75% | 0% |  |\n| retail/95 | 100% | 25% | tool_errors |\n| retail/1 | 100% | 50% |  |\n| ... 7 more | | | |\n\nAgent cost: $26.13 -\u003e $6.25.\n"
+    },
+    {
+      "pair": "gpt-4.1-2025-04-14/airline -\u003e gpt-4.1-mini-2025-04-14/airline",
+      "suite": "airline",
+      "rate_a": 0.56,
+      "rate_b": 0.505,
+      "verdict_full_data": "INCONCLUSIVE",
+      "ci_low": -0.14875264221237364,
+      "ci_high": 0.03875264221237363,
+      "fail_rate_by_trials": {
+        "1": 0.3525,
+        "2": 0.2625,
+        "4": 0.2475
+      },
+      "naive_fail_rate_by_trials": {
+        "1": 0.0875,
+        "2": 0.1325,
+        "4": 0.2975
+      },
+      "markdown": "### AgentGate: INCONCLUSIVE (needs more trials)\n\n`gpt-4.1-2025-04-14/airline` vs `gpt-4.1-mini-2025-04-14/airline` on 50 tasks. Pass rate 56.0% -\u003e 50.5% (-5.5 points, 90% CI -14.9 to +3.9, one-sided p = 0.165).\n\nRule: FAIL if the whole interval is below 0.0 points; PASS if it is entirely above -5.0 points; otherwise INCONCLUSIVE. With these tasks the smallest drop detectable at 80% power is 13.9 points.\n\n| suite | tasks | A | B | diff | CI |\n|---|---|---|---|---|---|\n| airline | 50 | 56.0% | 50.5% | -5.5 | -14.9 to +3.9 |\n\n|  | pass^1 | pass^2 | pass^3 | pass^4 |\n| --- | --- | --- | --- | --- |\n| A | 0.560 | 0.457 | 0.420 | 0.400 |\n| B | 0.505 | 0.393 | 0.320 | 0.260 |\n\n**9 tasks got worse by more than 25 points** (7 got better). New behaviour in their failures: `step_budget` in 1, `write_without_confirmation` in 1.\n\n| task | A | B | new in B's failures |\n|---|---|---|---|\n| airline/18 | 100% | 0% |  |\n| airline/26 | 100% | 25% |  |\n| airline/29 | 75% | 0% |  |\n| airline/10 | 50% | 0% | step_budget, write_without_confirmation |\n| airline/28 | 100% | 50% |  |\n| airline/37 | 50% | 0% |  |\n| airline/43 | 50% | 0% |  |\n| airline/45 | 100% | 50% |  |\n| airline/47 | 75% | 25% |  |\n\nAgent cost: $10.71 -\u003e $2.51.\n"
+    },
+    {
+      "pair": "claude-3-7-sonnet-20250219/airline -\u003e gpt-4.1-mini-2025-04-14/airline",
+      "suite": "airline",
+      "rate_a": 0.5,
+      "rate_b": 0.505,
+      "verdict_full_data": "INCONCLUSIVE",
+      "ci_low": -0.09191169750706865,
+      "ci_high": 0.10191169750706866,
+      "fail_rate_by_trials": {
+        "1": 0.1,
+        "2": 0.0525,
+        "4": 0.04
+      },
+      "naive_fail_rate_by_trials": {
+        "1": 0.0625,
+        "2": 0.025,
+        "4": 0.0575
+      },
+      "markdown": "### AgentGate: INCONCLUSIVE (needs more trials)\n\n`claude-3-7-sonnet-20250219/airline` vs `gpt-4.1-mini-2025-04-14/airline` on 50 tasks. Pass rate 50.0% -\u003e 50.5% (+0.5 points, 90% CI -9.2 to +10.2, one-sided p = 0.534).\n\nRule: FAIL if the whole interval is below 0.0 points; PASS if it is entirely above -5.0 points; otherwise INCONCLUSIVE. With these tasks the smallest drop detectable at 80% power is 14.4 points.\n\n| suite | tasks | A | B | diff | CI |\n|---|---|---|---|---|---|\n| airline | 50 | 50.0% | 50.5% | +0.5 | -9.2 to +10.2 |\n\n|  | pass^1 | pass^2 | pass^3 | pass^4 |\n| --- | --- | --- | --- | --- |\n| A | 0.500 | 0.410 | 0.375 | 0.360 |\n| B | 0.505 | 0.393 | 0.320 | 0.260 |\n\n**6 tasks got worse by more than 25 points** (9 got better). New behaviour in their failures: `step_budget` in 1.\n\n| task | A | B | new in B's failures |\n|---|---|---|---|\n| airline/18 | 100% | 0% |  |\n| airline/17 | 100% | 25% |  |\n| airline/42 | 100% | 25% |  |\n| airline/10 | 50% | 0% | step_budget |\n| airline/28 | 100% | 50% |  |\n| airline/29 | 50% | 0% |  |\n\nAgent cost: $69.83 -\u003e $2.51.\n"
+    },
+    {
+      "pair": "o4-mini-2025-04-16/airline -\u003e gpt-4.1-mini-2025-04-14/airline",
+      "suite": "airline",
+      "rate_a": 0.59,
+      "rate_b": 0.505,
+      "verdict_full_data": "INCONCLUSIVE",
+      "ci_low": -0.18273686901510083,
+      "ci_high": 0.012736869015100807,
+      "fail_rate_by_trials": {
+        "1": 0.17,
+        "2": 0.4075,
+        "4": 0.3925
+      },
+      "naive_fail_rate_by_trials": {
+        "1": 0.105,
+        "2": 0.2775,
+        "4": 0.475
+      },
+      "markdown": "### AgentGate: INCONCLUSIVE (needs more trials)\n\n`o4-mini-2025-04-16/airline` vs `gpt-4.1-mini-2025-04-14/airline` on 50 tasks. Pass rate 59.0% -\u003e 50.5% (-8.5 points, 90% CI -18.3 to +1.3, one-sided p = 0.0756).\n\nRule: FAIL if the whole interval is below 0.0 points; PASS if it is entirely above -5.0 points; otherwise INCONCLUSIVE. With these tasks the smallest drop detectable at 80% power is 14.5 points.\n\n| suite | tasks | A | B | diff | CI |\n|---|---|---|---|---|---|\n| airline | 50 | 59.0% | 50.5% | -8.5 | -18.3 to +1.3 |\n\n|  | pass^1 | pass^2 | pass^3 | pass^4 |\n| --- | --- | --- | --- | --- |\n| A | 0.590 | 0.483 | 0.420 | 0.380 |\n| B | 0.505 | 0.393 | 0.320 | 0.260 |\n\n**11 tasks got worse by more than 25 points** (4 got better). New behaviour in their failures: `write_without_confirmation` in 2, `step_budget` in 1.\n\n| task | A | B | new in B's failures |\n|---|---|---|---|\n| airline/10 | 100% | 0% | step_budget, write_without_confirmation |\n| airline/41 | 100% | 0% |  |\n| airline/43 | 100% | 0% |  |\n| airline/1 | 75% | 0% |  |\n| airline/21 | 75% | 0% | write_without_confirmation |\n| airline/26 | 100% | 25% |  |\n| airline/47 | 100% | 25% |  |\n| airline/17 | 75% | 25% |  |\n| airline/18 | 50% | 0% |  |\n| airline/22 | 50% | 0% |  |\n| ... 1 more | | | |\n\nAgent cost: $10.10 -\u003e $2.51.\n"
+    },
+    {
+      "pair": "gpt-4.1-2025-04-14/telecom -\u003e gpt-4.1-mini-2025-04-14/telecom",
+      "suite": "telecom",
+      "rate_a": 0.34210526315789475,
+      "rate_b": 0.43859649122807015,
+      "verdict_full_data": "PASS",
+      "ci_low": 0.04653473135897878,
+      "ci_high": 0.14644772478137208,
+      "fail_rate_by_trials": {
+        "1": 0.005,
+        "2": 0.0025,
+        "4": 0
+      },
+      "naive_fail_rate_by_trials": {
+        "1": 0,
+        "2": 0,
+        "4": 0
+      },
+      "markdown": "### AgentGate: PASS\n\n`gpt-4.1-2025-04-14/telecom` vs `gpt-4.1-mini-2025-04-14/telecom` on 114 tasks. Pass rate 34.2% -\u003e 43.9% (+9.6 points, 90% CI +4.7 to +14.6, one-sided p = 0.999).\n\nRule: FAIL if the whole interval is below 0.0 points; PASS if it is entirely above -5.0 points; otherwise INCONCLUSIVE. With these tasks the smallest drop detectable at 80% power is 7.5 points.\n\n| suite | tasks | A | B | diff | CI |\n|---|---|---|---|---|---|\n| telecom | 114 | 34.2% | 43.9% | +9.6 | +4.7 to +14.6 |\n\n|  | pass^1 | pass^2 | pass^3 | pass^4 |\n| --- | --- | --- | --- | --- |\n| A | 0.342 | 0.259 | 0.219 | 0.193 |\n| B | 0.439 | 0.298 | 0.224 | 0.175 |\n\n**5 tasks got worse by more than 25 points** (21 got better). New behaviour in their failures: `loop` in 5, `step_budget` in 4, `flag:transfer_to_human_agents` in 2, `max_steps` in 2.\n\n| task | A | B | new in B's failures |\n|---|---|---|---|\n| telecom/[mms_issue]airplane_mode_on|bad_network_preference|break_apn_mms_setting|data_usage_exceeded[PERSONA:Hard] | 100% | 0% | flag:transfer_to_human_agents, loop, step_budget |\n| telecom/[mms_issue]bad_wifi_calling|data_mode_off|data_usage_exceeded[PERSONA:Easy] | 100% | 50% | flag:transfer_to_human_agents, loop, step_budget |\n| telecom/[mms_issue]break_app_both_permissions|data_usage_exceeded[PERSONA:Hard] | 75% | 25% | loop, max_steps, step_budget |\n| telecom/[mobile_data_issue]airplane_mode_on|bad_network_preference[PERSONA:Hard] | 100% | 50% | loop, max_steps, step_budget |\n| telecom/[service_issue]break_apn_settings|contract_end_suspension|lock_sim_card_pin|unseat_sim_card[PERSONA:Hard] | 100% | 50% | loop |\n\nAgent cost: $50.14 -\u003e $20.99.\n"
+    },
+    {
+      "pair": "claude-3-7-sonnet-20250219/telecom -\u003e gpt-4.1-mini-2025-04-14/telecom",
+      "suite": "telecom",
+      "rate_a": 0.4934210526315789,
+      "rate_b": 0.43859649122807015,
+      "verdict_full_data": "FAIL",
+      "ci_low": -0.0997903548748347,
+      "ci_high": -0.009858767932182835,
+      "fail_rate_by_trials": {
+        "1": 0.06,
+        "2": 0.44,
+        "4": 0.645
+      },
+      "naive_fail_rate_by_trials": {
+        "1": 0.0175,
+        "2": 0.28,
+        "4": 0.535
+      },
+      "markdown": "### AgentGate: FAIL (regression)\n\n`claude-3-7-sonnet-20250219/telecom` vs `gpt-4.1-mini-2025-04-14/telecom` on 114 tasks. Pass rate 49.3% -\u003e 43.9% (-5.5 points, 90% CI -10.0 to -1.0, one-sided p = 0.0228).\n\nRule: FAIL if the whole interval is below 0.0 points; PASS if it is entirely above -5.0 points; otherwise INCONCLUSIVE. With these tasks the smallest drop detectable at 80% power is 6.7 points.\n\n| suite | tasks | A | B | diff | CI |\n|---|---|---|---|---|---|\n| telecom | 114 | 49.3% | 43.9% | -5.5 | -10.0 to -1.0 |\n\n|  | pass^1 | pass^2 | pass^3 | pass^4 |\n| --- | --- | --- | --- | --- |\n| A | 0.493 | 0.374 | 0.307 | 0.254 |\n| B | 0.439 | 0.298 | 0.224 | 0.175 |\n\n**16 tasks got worse by more than 25 points** (6 got better). New behaviour in their failures: `loop` in 15, `step_budget` in 11, `max_steps` in 5, `flag:transfer_to_human_agents` in 4.\n\n| task | A | B | new in B's failures |\n|---|---|---|---|\n| telecom/[mms_issue]airplane_mode_on|bad_network_preference|break_apn_mms_setting|data_usage_exceeded[PERSONA:Hard] | 75% | 0% | loop, step_budget |\n| telecom/[mms_issue]break_app_storage_permission|unseat_sim_card|user_abroad_roaming_disabled_on[PERSONA:Easy] | 75% | 0% | loop |\n| telecom/[mobile_data_issue]airplane_mode_on|bad_network_preference|data_mode_off|user_abroad_roaming_disabled_on[PERSONA:Hard] | 100% | 25% | flag:transfer_to_human_agents, loop, max_steps, step_budget |\n| telecom/[service_issue]airplane_mode_on|break_apn_settings|lock_sim_card_pin[PERSONA:None] | 100% | 25% | loop |\n| telecom/[mms_issue]airplane_mode_on|bad_network_preference|bad_wifi_calling|break_apn_mms_setting|break_app_storage_permission|data_mode_off|data_usage_exceeded|unseat_sim_card[PERSONA:Easy] | 50% | 0% | loop, step_budget |\n| telecom/[mobile_data_issue]airplane_mode_on|bad_network_preference[PERSONA:Hard] | 100% | 50% | loop, max_steps, step_budget |\n| telecom/[mobile_data_issue]airplane_mode_on|bad_network_preference|data_saver_mode_on|data_usage_exceeded|user_abroad_roaming_disabled_off[PERSONA:None] | 50% | 0% | loop, step_budget |\n| telecom/[mobile_data_issue]bad_network_preference|bad_vpn|data_usage_exceeded|user_abroad_roaming_disabled_off[PERSONA:Easy] | 100% | 50% | flag:transfer_to_human_agents, loop, max_steps, step_budget, write_without_confirmation |\n| telecom/[mobile_data_issue]bad_network_preference|bad_vpn|user_abroad_roaming_disabled_on[PERSONA:None] | 75% | 25% | loop, step_budget |\n| telecom/[mobile_data_issue]bad_network_preference|bad_vpn|user_abroad_roaming_enabled_off[PERSONA:Easy] | 100% | 50% | flag:transfer_to_human_agents, loop, step_budget |\n| ... 6 more | | | |\n\nAgent cost: $265.23 -\u003e $20.99.\n"
+    },
+    {
+      "pair": "o4-mini-2025-04-16/telecom -\u003e gpt-4.1-mini-2025-04-14/telecom",
+      "suite": "telecom",
+      "rate_a": 0.42105263157894735,
+      "rate_b": 0.43859649122807015,
+      "verdict_full_data": "PASS",
+      "ci_low": -0.028582324864620208,
+      "ci_high": 0.06367004416286581,
+      "fail_rate_by_trials": {
+        "1": 0.0525,
+        "2": 0.085,
+        "4": 0.005
+      },
+      "naive_fail_rate_by_trials": {
+        "1": 0.01,
+        "2": 0.0275,
+        "4": 0.0025
+      },
+      "markdown": "### AgentGate: PASS\n\n`o4-mini-2025-04-16/telecom` vs `gpt-4.1-mini-2025-04-14/telecom` on 114 tasks. Pass rate 42.1% -\u003e 43.9% (+1.8 points, 90% CI -2.9 to +6.4, one-sided p = 0.735).\n\nRule: FAIL if the whole interval is below 0.0 points; PASS if it is entirely above -5.0 points; otherwise INCONCLUSIVE. With these tasks the smallest drop detectable at 80% power is 6.9 points.\n\n| suite | tasks | A | B | diff | CI |\n|---|---|---|---|---|---|\n| telecom | 114 | 42.1% | 43.9% | +1.8 | -2.9 to +6.4 |\n\n|  | pass^1 | pass^2 | pass^3 | pass^4 |\n| --- | --- | --- | --- | --- |\n| A | 0.421 | 0.329 | 0.287 | 0.263 |\n| B | 0.439 | 0.298 | 0.224 | 0.175 |\n\n**8 tasks got worse by more than 25 points** (14 got better). New behaviour in their failures: `flag:transfer_to_human_agents` in 2, `step_budget` in 2, `loop` in 1, `max_steps` in 1.\n\n| task | A | B | new in B's failures |\n|---|---|---|---|\n| telecom/[mobile_data_issue]bad_network_preference|data_mode_off|data_saver_mode_on|data_usage_exceeded|user_abroad_roaming_disabled_off[PERSONA:Easy] | 100% | 25% | flag:transfer_to_human_agents |\n| telecom/[mobile_data_issue]bad_network_preference|data_saver_mode_on|data_usage_exceeded[PERSONA:Hard] | 100% | 25% | flag:transfer_to_human_agents, max_steps, step_budget |\n| telecom/[service_issue]airplane_mode_on|break_apn_settings|lock_sim_card_pin[PERSONA:None] | 100% | 25% |  |\n| telecom/[mms_issue]break_apn_mms_setting|data_mode_off|user_abroad_roaming_disabled_on[PERSONA:Hard] | 50% | 0% | step_budget |\n| telecom/[service_issue]airplane_mode_on|break_apn_settings|lock_sim_card_pin|overdue_bill_suspension|unseat_sim_card[PERSONA:None] | 100% | 50% |  |\n| telecom/[service_issue]break_apn_settings|contract_end_suspension|lock_sim_card_pin|unseat_sim_card[PERSONA:Hard] | 100% | 50% | loop |\n| telecom/[service_issue]break_apn_settings|lock_sim_card_pin[PERSONA:None] | 100% | 50% |  |\n| telecom/[service_issue]break_apn_settings|lock_sim_card_pin|overdue_bill_suspension[PERSONA:Easy] | 100% | 50% |  |\n\nAgent cost: $42.06 -\u003e $20.99.\n"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "my-agent@pr-123",
+  "expected_tools": {"support/refund-1": ["find_order", "refund_order"]},
+  "trials": [
+    {"suite": "support", "task": "refund-1", "trial": 0, "reward": 1, "pass": true, "cost_usd": 0.04, "duration_sec": 41,
+     "messages": [
+       {"role": "user", "content": "I want a refund for order 17"},
+       {"role": "assistant", "tool_calls": [{"id": "1", "name": "find_order", "arguments": {"id": 17}}]},
+       {"role": "tool", "content": "{\"status\":\"delivered\"}"},
+       {"role": "assistant", "content": "I can refund order 17 to your card. Shall I go ahead?"},
+       {"role": "user", "content": "yes please"},
+       {"role": "assistant", "tool_calls": [{"id": "2", "name": "refund_order", "arguments": {"id": 17}}]},
+       {"role": "tool", "content": "{\"ok\":true}"}
+     ]},
+    {"suite": "support", "task": "refund-1", "trial": 1, "reward": 0, "pass": false, "termination": "infrastructure_error", "infra_error": true}
+  ]
+}

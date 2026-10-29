@@ -1,0 +1,23 @@
+2026/10/29 00:16:06 A/A on 26 files
+2026/10/29 00:16:40 swap gpt-4.1-2025-04-14 -> gpt-4.1-mini-2025-04-14 on retail
+2026/10/29 00:16:40 swap claude-3-7-sonnet-20250219 -> gpt-4.1-mini-2025-04-14 on retail
+2026/10/29 00:16:41 swap o4-mini-2025-04-16 -> gpt-4.1-mini-2025-04-14 on retail
+2026/10/29 00:16:41 swap gpt-4.1-2025-04-14 -> gpt-4.1-mini-2025-04-14 on airline
+2026/10/29 00:16:42 swap claude-3-7-sonnet-20250219 -> gpt-4.1-mini-2025-04-14 on airline
+2026/10/29 00:16:42 swap o4-mini-2025-04-16 -> gpt-4.1-mini-2025-04-14 on airline
+2026/10/29 00:16:42 swap gpt-4.1-2025-04-14 -> gpt-4.1-mini-2025-04-14 on telecom
+2026/10/29 00:16:43 swap claude-3-7-sonnet-20250219 -> gpt-4.1-mini-2025-04-14 on telecom
+2026/10/29 00:16:45 swap o4-mini-2025-04-16 -> gpt-4.1-mini-2025-04-14 on telecom
+2026/10/29 00:16:46 inject "tool schema change breaks exchange_* (all affected trials fail)" into retail
+2026/10/29 00:16:46 inject "dropped policy line: return_* tasks fail half the time" into retail
+2026/10/29 00:16:47 inject "weaker model: random 20% of tasks fail half the time" into retail
+2026/10/29 00:16:47 inject "subtle: random 10% of tasks fail a quarter of the time" into retail
+2026/10/29 00:16:48 inject "weaker model: random 20% of tasks fail half the time" into airline
+2026/10/29 00:16:48 inject "subtle: random 10% of tasks fail a quarter of the time" into airline
+2026/10/29 00:16:48 power curves
+2026/10/29 00:16:54 reliability
+2026/10/29 00:17:00 rule validity
+
+real	0m56.726s
+user	0m32.118s
+sys	0m4.137s
