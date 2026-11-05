@@ -143,7 +143,7 @@ Calibration on the published tau2-bench data (`git clone --depth 1 --sparse http
 
 | code | data directory | values differing by more than 1e-9 |
 |---|---|---|
-| round 1 (old seeding) | `/tmp/tau2-bench/data/tau2/results/final` (38 chars) | 66 (all in the A/A section) |
+| round 1 (old seeding) | `/tmp/tau2-bench/data/tau2/results/final` (39 chars) | 66 (all in the A/A section) |
 | round 1 (old seeding) | `../tau2-bench/data/tau2/results/final` (README's path, 37 chars) | 70 |
 | round 1 (old seeding) | a 53-character path | **0** |
 | this round | `/tmp/tau2-bench/data/tau2/results/final` | **0** (largest difference 3.3e-16) |
