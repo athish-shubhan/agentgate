@@ -67,9 +67,10 @@ bin/agentgate compare -base main.json -cand pr.json -md comment.md -json report.
 # any harness: write examples/run.json format and use -format run
 bin/agentgate compare -format run -base main.json -cand pr.json
 
-# reproduce results/ (about a minute on 2 vCPUs)
+# reproduce results/ (about a minute on 2 vCPUs); calibration.json comes out byte-identical
 git clone https://github.com/sierra-research/tau2-bench ../tau2-bench
-bin/agentgate calibrate -data ../tau2-bench/data/tau2/results/final -out results
+bin/agentgate calibrate -data ../tau2-bench/data/tau2/results/final -out /tmp/recal
+cmp results/calibration.json /tmp/recal/calibration.json
 python3 bench/plot.py results/calibration.json results
 
 # service
@@ -93,7 +94,7 @@ Tests: `go test ./...` (set `AGENTGATE_TEST_DSN` to also run the Postgres store 
 - **No new agent runs.** Every number is a reanalysis or resample of published tau2-bench trials (4 models, 4 trials per task, user simulator gpt-4.1). Injected regressions are simulated by flipping recorded passes to failures; the "tool schema change" and "dropped policy line" names describe what the injection models, not a real prompt edit that was run.
 - **Suites:** tau2-bench only. Terminal-Bench and network-ops suites from the spec are not built; any harness can feed the gate through the JSON format.
 - **Model-graded rubrics:** not implemented. Trajectory rules are deterministic and validated against reward (`SUMMARY.md` section 7).
-- **GitHub action:** written but not exercised on GitHub; it runs the same `compare` command used here.
+- **GitHub action:** exercised in this repo's CI (`action` job: a no-op comparison of `examples/run.json`, and a missing file reported as `ERROR`), not yet on a real agent eval; it runs the same `compare` command used here.
 - **Service:** two HTTP front ends over one transport-neutral core: `net/http` and CloudWeGo Hertz (`agentgate serve -http hertz`); the same test suite runs against both. No Kitex/Thrift API. Postgres store tested against Postgres 16 locally.
 - **Coze Loop contribution:** not done. The natural upstream piece is a paired-comparison / pass^k experiment report in Coze Loop's evaluation module. Do not claim it until a PR is merged.
 - Cost per gate covers agent tokens only (user-simulator cost excluded). The "15 minutes with 32 sandboxes" figure is arithmetic on recorded trial durations, not a measured run.

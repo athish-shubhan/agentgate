@@ -105,3 +105,71 @@ The README numbers are left unchanged; regenerating `results/` is a decision for
 `server/server_test.go`, `cmd/agentgate/main.go`, `cmd/agentgate/replay.go`, `cmd/agentgate/main_test.go` (new),
 `graders/graders.go`, `replay/http.go`, `.github/workflows/ci.yml` (new), `.golangci.yml` (new), `README.md`,
 `IMPROVEMENTS.md` (new).
+
+## Round 2 (2026-11-05): calibration made reproducible from any directory, calibrate tests, action hardened and run in CI
+
+Stacked on round 1 (`improve/round-1`).
+
+### What changed
+
+1. **Bug: the A/A numbers depended on the directory the data was cloned into.** `calibrate.AA` seeded each
+   file's random splits with `len(path)`, the length of the file's path string. Re-running the README's
+   reproduce command with the data anywhere else gave different A/A numbers; this is why round 1 found that
+   `results/calibration.json` did not match a re-run (66 of 820 values). Searching path lengths showed the
+   committed results come from a 53-character data directory. The stream now depends only on the file name
+   (`54 + len(name)`, equal to the old value for that directory), so **the published numbers are unchanged** and
+   now reproduce from any location.
+2. **Bit-for-bit reproducible calibration.** Several float sums iterated Go maps, whose order is random, so two
+   runs differed in the last digits (e.g. `0.4100000000000001` vs `0.41`). `stats.Paired`, `stats.PassHatK`, the
+   MDE in `gate.Compare` and three sums in `calibrate` now iterate sorted keys. Two runs are byte-identical, and
+   `results/calibration.json` was regenerated (29 lines change, by at most 3.3e-16). The README's reproduce step
+   now ends with `cmp`.
+3. **Tests for `calibrate`** (0% coverage before; it produces every number in the README), on synthetic tau2-bench
+   files: A/A independent of the data directory (fails on the old seeding), A/A false-FAIL rate near alpha,
+   injected tool-schema break caught with the sequential gate stopping early, results identical for a seed, a
+   worse model detected more often with more trials, reliability statistics.
+4. **GitHub action hardened.** `action.yml` pasted `${{ inputs.* }}` into its shell scripts (the GitHub Actions
+   script-injection pattern); inputs now arrive as environment variables. With round 1's exit codes, a bad input
+   (exit 2) now sets `verdict=ERROR`, writes a short step summary instead of running `jq` on a missing report,
+   and skips the PR comment.
+5. **The action runs in CI.** A new `action` job uses `./` like a user's workflow would: a no-op comparison of
+   `examples/run.json` must give `INCONCLUSIVE`, and a missing results file must fail the step with
+   `verdict=ERROR`. The README's "written but not exercised on GitHub" is updated accordingly.
+
+### How it was verified
+
+Calibration on the published tau2-bench data (`git clone --depth 1 --sparse https://github.com/sierra-research/tau2-bench`,
+`data/tau2/results/final`, 26 files), compared with the committed `results/calibration.json` (820 numeric values):
+
+| code | data directory | values differing by more than 1e-9 |
+|---|---|---|
+| round 1 (old seeding) | `/tmp/tau2-bench/data/tau2/results/final` (39 chars) | 66 (all in the A/A section) |
+| round 1 (old seeding) | `../tau2-bench/data/tau2/results/final` (README's path, 37 chars) | 70 |
+| round 1 (old seeding) | a 53-character path | **0** |
+| this round | `/tmp/tau2-bench/data/tau2/results/final` | **0** (largest difference 3.3e-16) |
+
+```
+$ bin/agentgate calibrate -data /tmp/tau2-bench/data/tau2/results/final -out /tmp/recal-det1   # twice
+$ cmp /tmp/recal-det1/calibration.json /tmp/recal-det2/calibration.json && echo BYTE-IDENTICAL
+BYTE-IDENTICAL
+```
+
+So the README's A/A row (4.7% mean, range 2.8 to 7.8%, naive 1.3%) is confirmed, and the round 1 entry under
+"Claims I could not verify" is resolved: the claims were right and the harness was path-dependent.
+
+```
+$ go test -count=1 -v ./... | grep -E '^--- ' | awk '{print $2}' | sort | uniq -c    # round 1 -> this round
+     23 PASS: -> 28 PASS:   (1 SKIP: TestPGStore without AGENTGATE_TEST_DSN)
+$ go test -race -count=1 ./...      # all ok
+$ golangci-lint run ./...           # 0 issues
+```
+
+Coverage: `calibrate` 0% -> 58.1%, `stats` 76.8% -> 77.6%. `TestAAIndependentOfDirectory` on the old seeding:
+`calibrate_test.go:105: same data, different directory`.
+
+The action job runs on GitHub in this PR's CI; locally the two cases exit 0 and 2 as the job expects.
+
+### Files touched
+
+`calibrate/calibrate.go`, `calibrate/calibrate_test.go` (new), `stats/stats.go`, `gate/gate.go`, `action.yml`,
+`.github/workflows/ci.yml`, `results/calibration.json`, `README.md`, `IMPROVEMENTS.md`.

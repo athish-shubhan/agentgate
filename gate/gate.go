@@ -139,7 +139,8 @@ func Compare(a, b trajectory.Run, cfg Config) Report {
 	}
 	// power: smallest drop this many tasks can detect at 80% power
 	var ds []float64
-	for k, x := range oa {
+	for _, k := range stats.SortedKeys(oa) {
+		x := oa[k]
 		if y, ok := ob[k]; ok {
 			ds = append(ds, y.Rate()-x.Rate())
 		}

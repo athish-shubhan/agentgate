@@ -63,6 +63,13 @@ type AAResult struct {
 	PassPaired      float64 `json:"pass_paired"` // share of A/A splits the gate PASSed
 }
 
+// aaStream picks the random stream for one file's A/A splits. It used to be
+// len(path), so the A/A numbers changed with the directory the tau2-bench
+// data was cloned into. It now depends only on the file name: 54 + len(name)
+// equals the old value for the 53-character data directory that produced
+// results/, so the published numbers are unchanged.
+func aaStream(path string) uint64 { return uint64(54 + len(filepath.Base(path))) }
+
 // AA splits each file's trials 2+2 at random, many times, and counts how
 // often each test calls the identical agent a regression.
 func AA(files []string, reps int, cfg gate.Config, seed uint64) ([]AAResult, error) {
@@ -72,7 +79,7 @@ func AA(files []string, reps int, cfg gate.Config, seed uint64) ([]AAResult, err
 		if err != nil {
 			return nil, err
 		}
-		rng := rand.New(rand.NewPCG(seed, uint64(len(f))))
+		rng := rand.New(rand.NewPCG(seed, aaStream(f)))
 		res := AAResult{File: filepath.Base(f), Reps: reps}
 		var ff, fn, ps int
 		for i := 0; i < reps; i++ {
@@ -93,8 +100,8 @@ func AA(files []string, reps int, cfg gate.Config, seed uint64) ([]AAResult, err
 		}
 		o, _ := gate.Outcomes(run, -1)
 		var rates []float64
-		for _, x := range o {
-			rates = append(rates, x.Rate())
+		for _, k := range sortedKeys(o) {
+			rates = append(rates, o[k].Rate())
 		}
 		res.PassRate = stats.Mean(rates)
 		res.FalseFailPaired = float64(ff) / float64(reps)
@@ -270,8 +277,8 @@ func Inject(file string, inj Injection, reps int, cfg gate.Config, seed uint64) 
 		}
 		ob, _ := gate.Outcomes(b, -1)
 		var d []float64
-		for k, x := range oa0 {
-			d = append(d, ob[k].Rate()-x.Rate())
+		for _, k := range sortedKeys(oa0) {
+			d = append(d, ob[k].Rate()-oa0[k].Rate())
 		}
 		drop += -stats.Mean(d)
 		oa, _ := gate.Outcomes(a, -1)
@@ -439,7 +446,8 @@ func Reliable(file string) (Reliability, error) {
 	mixed := 0
 	var rates []float64
 	maxN := 0
-	for _, x := range o {
+	for _, k := range sortedKeys(o) {
+		x := o[k]
 		rates = append(rates, x.Rate())
 		if x.Successes > 0 && x.Successes < x.Trials {
 			mixed++
