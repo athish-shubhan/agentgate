@@ -83,7 +83,7 @@ Calibration (`results/`) does not serialize the changed types. I re-ran it on th
 (`git clone --depth 1 --sparse https://github.com/sierra-research/tau2-bench`, `data/tau2/results/final`,
 26 result files): `bin/agentgate calibrate -data .../final -out /tmp/recal` took 40 s. The output of this
 branch matches main's code on all 820 numeric fields (largest difference below 1e-9; main itself differs from
-run to run at the 1e-15 level because of map iteration order in float sums).
+run to run in the last floating-point digits because of map iteration order in float sums).
 
 ### Claims I could not verify
 
