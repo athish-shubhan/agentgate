@@ -50,3 +50,33 @@ jobs:
       - uses: golangci/golangci-lint-action@v8
         with:
           version: v2.5.0
+
+  # Runs the composite action in action.yml the way a user's workflow would.
+  action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: ok
+        uses: ./
+        with:
+          base: examples/run.json
+          candidate: examples/run.json
+          format: run
+          comment: "false"
+      - name: verdict of a no-op comparison
+        env:
+          VERDICT: ${{ steps.ok.outputs.verdict }}
+        run: test "$VERDICT" = INCONCLUSIVE
+      - id: bad
+        continue-on-error: true
+        uses: ./
+        with:
+          base: examples/run.json
+          candidate: does-not-exist.json
+          format: run
+          comment: "false"
+      - name: a missing results file is an error, not a verdict
+        env:
+          VERDICT: ${{ steps.bad.outputs.verdict }}
+          OUTCOME: ${{ steps.bad.outcome }}
+        run: test "$VERDICT" = ERROR && test "$OUTCOME" = failure

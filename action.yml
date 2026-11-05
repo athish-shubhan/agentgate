@@ -1,7 +1,7 @@
 # GitHub composite action: build agentgate, compare baseline and candidate
 # results, post the report as a PR comment, fail the job on a regression.
-# Not exercised on GitHub from this repo (no CI runner was available); the
-# command it runs is the same `agentgate compare` used in results/.
+# Exercised by the `action` job in .github/workflows/ci.yml; the command it
+# runs is the same `agentgate compare` used in results/.
 name: AgentGate
 description: Gate a PR on agent eval results with a paired, task-clustered test
 inputs:
@@ -25,7 +25,7 @@ inputs:
     default: "true"
 outputs:
   verdict:
-    description: PASS, FAIL or INCONCLUSIVE
+    description: PASS, FAIL, INCONCLUSIVE, or ERROR when the inputs could not be compared
     value: ${{ steps.gate.outputs.verdict }}
 runs:
   using: composite
@@ -40,24 +40,41 @@ runs:
     - name: compare
       id: gate
       shell: bash
+      # Inputs reach the script as environment variables, never pasted into
+      # it, so a file name or margin cannot inject shell code.
+      env:
+        AG_FORMAT: ${{ inputs.format }}
+        AG_BASE: ${{ inputs.base }}
+        AG_CAND: ${{ inputs.candidate }}
+        AG_ALPHA: ${{ inputs.alpha }}
+        AG_FAIL_MARGIN: ${{ inputs.fail-margin }}
+        AG_PASS_MARGIN: ${{ inputs.pass-margin }}
       run: |
         set +e
-        "$RUNNER_TEMP/agentgate" compare -format "${{ inputs.format }}" \
-          -base "${{ inputs.base }}" -cand "${{ inputs.candidate }}" \
-          -alpha "${{ inputs.alpha }}" -fail-margin "${{ inputs.fail-margin }}" -pass-margin "${{ inputs.pass-margin }}" \
+        "$RUNNER_TEMP/agentgate" compare -format "$AG_FORMAT" -base "$AG_BASE" -cand "$AG_CAND" \
+          -alpha "$AG_ALPHA" -fail-margin "$AG_FAIL_MARGIN" -pass-margin "$AG_PASS_MARGIN" \
           -md "$RUNNER_TEMP/agentgate.md" -json "$RUNNER_TEMP/agentgate.json" > /dev/null
         code=$?
         echo "exit=$code" >> "$GITHUB_OUTPUT"
-        echo "verdict=$(jq -r .verdict "$RUNNER_TEMP/agentgate.json")" >> "$GITHUB_OUTPUT"
-        cat "$RUNNER_TEMP/agentgate.md" >> "$GITHUB_STEP_SUMMARY"
+        # exit 0 PASS/INCONCLUSIVE, 1 FAIL, 2 bad input (no report is written)
+        if [ "$code" -le 1 ]; then
+          echo "verdict=$(jq -r .verdict "$RUNNER_TEMP/agentgate.json")" >> "$GITHUB_OUTPUT"
+          cat "$RUNNER_TEMP/agentgate.md" >> "$GITHUB_STEP_SUMMARY"
+        else
+          echo "verdict=ERROR" >> "$GITHUB_OUTPUT"
+          echo "AgentGate could not compare the runs (exit $code); see the step log." >> "$GITHUB_STEP_SUMMARY"
+        fi
     - name: comment
-      if: inputs.comment == 'true' && github.event_name == 'pull_request'
+      if: inputs.comment == 'true' && github.event_name == 'pull_request' && steps.gate.outputs.exit != '2'
       shell: bash
       env:
         GH_TOKEN: ${{ github.token }}
+        PR: ${{ github.event.pull_request.number }}
       run: |
-        gh pr comment "${{ github.event.pull_request.number }}" --edit-last --body-file "$RUNNER_TEMP/agentgate.md" \
-          || gh pr comment "${{ github.event.pull_request.number }}" --body-file "$RUNNER_TEMP/agentgate.md"
+        gh pr comment "$PR" --edit-last --body-file "$RUNNER_TEMP/agentgate.md" \
+          || gh pr comment "$PR" --body-file "$RUNNER_TEMP/agentgate.md"
     - name: verdict
       shell: bash
-      run: exit ${{ steps.gate.outputs.exit }}
+      env:
+        CODE: ${{ steps.gate.outputs.exit }}
+      run: exit "$CODE"
