@@ -216,8 +216,8 @@ arguments.
 
 ### Not verified
 
-The mermaid diagram was not rendered locally (no mermaid renderer in this environment); labels are quoted to avoid
-parser issues. Calibration results are unaffected (no code on that path changed).
+Nothing open. The mermaid diagram was rendered locally with `@mermaid-js/mermaid-cli` 11.4.2 (`mmdc -i a.mmd -o a.png`)
+without errors. Calibration results are unaffected (no code on that path changed).
 
 ### Files touched
 
