@@ -223,3 +223,59 @@ without errors. Calibration results are unaffected (no code on that path changed
 
 `replay/replay.go`, `replay/http.go`, `replay/replay_test.go`, `server/server_test.go`, `docs/architecture.md` (new),
 `README.md`, `IMPROVEMENTS.md`.
+
+## Round 4 (2026-11-05): the report says which tasks it did not compare; typographic apostrophes in the grader
+
+Stacked on round 3 (`improve/round-3`).
+
+### What changed
+
+1. **Unmatched tasks are reported.** The gate compares tasks present in both runs. Tasks with results in only one
+   (missing from the other run, or every trial there an infrastructure failure) were dropped without a word, so a
+   candidate run that lost half its tasks was judged on the remaining half with nothing in the comment to say so.
+   The report now has `tasks_only_in_base`, `tasks_only_in_candidate` and up to five examples, and the PR comment
+   adds a **Not compared** line when any exist. The decision rule is unchanged. On real files, comparing a retail
+   run with an airline run by mistake:
+
+   ```
+   ### AgentGate: INCONCLUSIVE (needs more trials)
+   **Not compared:** 114 tasks have results only in `gpt-4.1-2025-04-14/retail` and 50 only in
+   `gpt-4.1-2025-04-14/airline` (missing, or every trial an infrastructure failure), for example `airline/0`, ...
+   ```
+
+   Before, the comment only said "on 0 tasks".
+2. **Grader: typographic apostrophes.** The `write_without_confirmation` rule split words on anything but
+   `a-z`, `0-9` and `'`, so a user turn with `’` (frequent in model-written text: 4,251 of the 16,439 user turns
+   before a write call in the published tau2-bench data) could never match `that's right`. `’` is now read as `'`.
+   Measured on the published data: **0 of 16,439** confirmation decisions change (those turns confirm with another
+   word or not at all), so section 7 of `SUMMARY.md` is unaffected.
+3. **Looked at and not changed: negation.** "no, don't proceed" counts as a confirmation because it contains
+   `proceed`. A negation-aware rule (no confirmation word within three words after `not`, `don't`, `no`, ...)
+   changed 66 of 16,439 decisions, but the examples showed it wrong as often as right ("If not, then please go
+   ahead" is a confirmation), so the rule was left as it is; `SUMMARY.md` already calls the keyword matcher this
+   rule's weak point.
+
+### How it was verified
+
+```
+$ bin/agentgate calibrate -data tau2-bench/data/tau2/results/final -out /tmp/recal-r4
+$ cmp results/calibration.json /tmp/recal-r4/calibration.json && echo BYTE-IDENTICAL
+BYTE-IDENTICAL
+```
+
+(All calibration pairs share their task sets, and the grader change affects no decision in the data.) The
+measurements in items 2 and 3 come from two short Python scripts over the 26 published result files that replay
+the rule on the user turn before every write tool call.
+
+```
+$ go test -count=1 -v ./... | grep -E '^--- ' | awk '{print $2}' | sort | uniq -c    # round 3 -> this round
+     34 PASS: -> 36 PASS:   (1 SKIP: TestPGStore without AGENTGATE_TEST_DSN)
+$ go test -race -count=1 ./... ; golangci-lint run ./...    # all ok; 0 issues
+```
+
+New tests: `TestCompareReportsUnmatchedTasks`, `TestConfirmationWithTypographicApostrophe` (fails on the old
+grader: `"That’s right, go on" not counted as confirmation`).
+
+### Files touched
+
+`gate/gate.go`, `gate/gate_test.go`, `graders/graders.go`, `graders/graders_test.go`, `IMPROVEMENTS.md`.
