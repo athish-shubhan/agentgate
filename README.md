@@ -2,7 +2,7 @@
 
 A regression gate for LLM agents. Given results for agent version A (main) and B (a pull request) on the same task suite, AgentGate decides **PASS / FAIL / INCONCLUSIVE** with a controlled false-alarm rate, says how big a drop the data could have detected, and writes a PR comment that points at the tasks and behaviours that got worse.
 
-Go, no dependencies beyond `lib/pq`. CLI, HTTP service (Postgres or in-memory), GitHub composite action, and a calibration harness that measures the gate on 10,832 published tau2-bench trials.
+Go; the only third-party modules are `lib/pq` (Postgres driver) and CloudWeGo Hertz (optional second HTTP front end). CLI, HTTP service (Postgres or in-memory), GitHub composite action, and a calibration harness that measures the gate on 10,832 published tau2-bench trials.
 
 ## Results (measured; no model calls, all from published tau2-bench trials)
 
@@ -43,12 +43,25 @@ action.yml   GitHub composite action (build, compare, comment, fail on FAIL)
 bench/plot.py  results/calibration.json -> figures + SUMMARY.md
 ```
 
+## Quick start
+
+Needs Go 1.24+. From a clean clone, no data download:
+
+```
+git clone https://github.com/athish-shubhan/agentgate && cd agentgate
+go test ./...
+go build -o bin/agentgate ./cmd/agentgate
+bin/agentgate compare -format run -base examples/run.json -cand examples/run.json -json report.json
+```
+
+`examples/run.json` has one task, so the gate prints INCONCLUSIVE (it never decides on fewer than 2 tasks). Exit codes of `compare`: **0** PASS or INCONCLUSIVE, **1** FAIL (regression), **2** usage or input error (missing file, wrong `-format`, no trials, unwritable output), so CI can tell a regression from a broken pipeline. Quantities that are undefined (pass^k with fewer than k trials per task, the SE with one shared task) are `null` in the JSON report and `n/a` in the comment.
+
 ## Usage
 
 ```
 go build -o bin/agentgate ./cmd/agentgate
 
-# gate two tau2-bench result files (exit code 1 on FAIL)
+# gate two tau2-bench result files (exit code 1 on FAIL, 2 on bad input)
 bin/agentgate compare -base main.json -cand pr.json -md comment.md -json report.json
 
 # any harness: write examples/run.json format and use -format run
@@ -73,7 +86,7 @@ bin/agentgate replay -mode replay-or-record -cassette tools.jsonl -upstream http
 
 Example PR comment (real data): [`results/example_pr_comment.md`](results/example_pr_comment.md).
 
-Tests: `go test ./...` (set `AGENTGATE_TEST_DSN` to also run the Postgres store test).
+Tests: `go test ./...` (set `AGENTGATE_TEST_DSN` to also run the Postgres store test). CI (`.github/workflows/ci.yml`) runs gofmt, `go vet`, `go test -race` against a Postgres 16 service, and golangci-lint on every pull request.
 
 ## Honest scope
 

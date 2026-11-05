@@ -128,6 +128,31 @@ func exerciseURL(t *testing.T, base string) {
 	if len(runs) < 3 {
 		t.Fatalf("runs: %+v", runs)
 	}
+	// One shared task and two trials: SE is infinite and pass^3, pass^4 are
+	// undefined. The response must still be a complete JSON report (it used
+	// to be HTTP 200 with an empty body).
+	put("tiny-a", synthRun("tiny-a", []float64{1}, 2))
+	put("tiny-b", synthRun("tiny-b", []float64{0.5}, 2))
+	resp, err := http.Post(ts.URL+"/v1/compare", "application/json", strings.NewReader(`{"base":"tiny-a","candidate":"tiny-b"}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	raw, _ := io.ReadAll(resp.Body)
+	resp.Body.Close()
+	var tiny CompareResponse
+	if err := json.Unmarshal(raw, &tiny); err != nil || resp.StatusCode != 200 {
+		t.Fatalf("tiny compare: %d %v %q", resp.StatusCode, err, raw)
+	}
+	if tiny.Verdict != gate.Inconclusive || tiny.Report.Overall.Tasks != 1 || !strings.Contains(string(raw), `"se": null`) {
+		t.Fatalf("tiny compare: %s", raw)
+	}
+	resp, _ = http.Get(fmt.Sprintf("%s/v1/reports/%d", ts.URL, tiny.ID))
+	raw, _ = io.ReadAll(resp.Body)
+	resp.Body.Close()
+	if resp.StatusCode != 200 || !json.Valid(raw) {
+		t.Fatalf("tiny report: %d %q", resp.StatusCode, raw)
+	}
+
 	req, _ := http.NewRequest(http.MethodPut, ts.URL+"/v1/runs/x?format=tau2", strings.NewReader(`{"hello":1}`))
 	resp, _ = http.DefaultClient.Do(req)
 	if resp.StatusCode != 400 {
