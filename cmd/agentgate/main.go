@@ -1,6 +1,7 @@
 // Command agentgate is the CLI and service of the agent regression gate.
 //
 //	agentgate compare   -base A.json -cand B.json [-format tau2|run] [-md report.md] [-json report.json]
+//	                    exit 0 PASS/INCONCLUSIVE, 1 FAIL, 2 usage or input error
 //	agentgate calibrate -data <tau2-bench results dir> -out results/
 //	agentgate serve     -addr :8080 [-dsn postgres://...]
 //	agentgate replay    record|replay a tool cassette through an HTTP proxy
@@ -8,8 +9,10 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -22,76 +25,128 @@ import (
 	"agentgate/trajectory"
 )
 
+// Exit codes: 0 PASS or INCONCLUSIVE, 1 FAIL (regression), 2 usage or input
+// error. Keeping errors off exit code 1 means a CI job can tell a regression
+// from a missing or malformed results file.
+const (
+	exitOK    = 0
+	exitFail  = 1
+	exitError = 2
+)
+
 func main() {
-	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, "usage: agentgate {compare|calibrate|serve|replay} [flags]")
-		os.Exit(2)
+	log.SetFlags(0)
+	log.SetPrefix("agentgate: ")
+	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr))
+}
+
+func run(args []string, stdout, stderr io.Writer) int {
+	if len(args) < 1 {
+		fmt.Fprintln(stderr, "usage: agentgate {compare|calibrate|serve|replay} [flags]")
+		return exitError
 	}
 	var err error
-	switch os.Args[1] {
+	switch args[0] {
 	case "compare":
-		err = cmdCompare(os.Args[2:])
+		var v gate.Verdict
+		v, err = cmdCompare(args[1:], stdout, stderr)
+		if err == nil && v == gate.Fail {
+			return exitFail // a CI step fails on a regression
+		}
 	case "calibrate":
-		err = cmdCalibrate(os.Args[2:])
+		err = cmdCalibrate(args[1:])
 	case "serve":
-		err = server.Main(os.Args[2:])
+		err = server.Main(args[1:])
 	case "replay":
-		err = cmdReplay(os.Args[2:])
+		err = cmdReplay(args[1:])
 	default:
-		err = fmt.Errorf("unknown command %q", os.Args[1])
+		err = fmt.Errorf("unknown command %q", args[0])
 	}
-	if err != nil {
-		log.Fatal(err)
+	switch {
+	case errors.Is(err, flag.ErrHelp):
+		return exitOK
+	case err != nil:
+		fmt.Fprintln(stderr, "agentgate:", err)
+		return exitError
 	}
+	return exitOK
 }
 
 func load(path, format string) (trajectory.Run, error) {
-	if format == "tau2" {
-		return trajectory.LoadTau2(path, true)
-	}
 	var r trajectory.Run
-	b, err := os.ReadFile(path)
+	var err error
+	switch format {
+	case "tau2":
+		r, err = trajectory.LoadTau2(path, true)
+	case "run":
+		var b []byte
+		if b, err = os.ReadFile(path); err == nil {
+			if err = json.Unmarshal(b, &r); err != nil {
+				err = fmt.Errorf("%s: %w", path, err)
+			}
+		}
+	default:
+		return r, fmt.Errorf("unknown -format %q (want tau2 or run)", format)
+	}
 	if err != nil {
 		return r, err
 	}
-	return r, json.Unmarshal(b, &r)
+	if len(r.Trials) == 0 {
+		return r, fmt.Errorf("%s: no trials (wrong -format?)", path)
+	}
+	return r, nil
 }
 
-func cmdCompare(args []string) error {
-	fs := flag.NewFlagSet("compare", flag.ExitOnError)
-	base := fs.String("base", "", "baseline results")
-	cand := fs.String("cand", "", "candidate results")
+func cmdCompare(args []string, stdout, stderr io.Writer) (gate.Verdict, error) {
+	fs := flag.NewFlagSet("compare", flag.ContinueOnError)
+	fs.SetOutput(stderr)
+	base := fs.String("base", "", "baseline results (required)")
+	cand := fs.String("cand", "", "candidate results (required)")
 	format := fs.String("format", "tau2", "tau2 | run (agentgate JSON)")
-	alpha := fs.Float64("alpha", 0.05, "one-sided level")
+	alpha := fs.Float64("alpha", 0.05, "one-sided level, 0 < alpha < 0.5")
 	failM := fs.Float64("fail-margin", 0, "FAIL if confident the drop exceeds this (fraction)")
 	passM := fs.Float64("pass-margin", 0.05, "PASS if confident the drop is less than this (fraction)")
 	md := fs.String("md", "", "write the PR comment here")
 	js := fs.String("json", "", "write the full report here")
-	fs.Parse(args)
+	if err := fs.Parse(args); err != nil {
+		return "", err
+	}
+	if *base == "" || *cand == "" {
+		return "", errors.New("compare: -base and -cand are required")
+	}
+	if *alpha <= 0 || *alpha >= 0.5 || *passM < *failM {
+		return "", errors.New("compare: need 0 < -alpha < 0.5 and -pass-margin >= -fail-margin")
+	}
 	a, err := load(*base, *format)
 	if err != nil {
-		return err
+		return "", err
 	}
 	b, err := load(*cand, *format)
 	if err != nil {
-		return err
+		return "", err
 	}
 	cfg := gate.DefaultConfig()
 	cfg.Alpha, cfg.FailMargin, cfg.PassMargin = *alpha, *failM, *passM
 	rep := gate.Compare(a, b, cfg)
 	text := rep.Markdown(cfg)
-	fmt.Print(text)
 	if *md != "" {
-		os.WriteFile(*md, []byte(text), 0o644)
+		if err := os.WriteFile(*md, []byte(text), 0o644); err != nil {
+			return "", err
+		}
 	}
 	if *js != "" {
-		bb, _ := json.MarshalIndent(rep, "", "  ")
-		os.WriteFile(*js, bb, 0o644)
+		bb, err := json.MarshalIndent(rep, "", "  ")
+		if err != nil {
+			return "", fmt.Errorf("encode report: %w", err)
+		}
+		if err := os.WriteFile(*js, append(bb, '\n'), 0o644); err != nil {
+			return "", err
+		}
 	}
-	if rep.Verdict == gate.Fail {
-		os.Exit(1) // a CI step fails on a regression
+	if _, err := io.WriteString(stdout, text); err != nil {
+		return "", err
 	}
-	return nil
+	return rep.Verdict, nil
 }
 
 func cmdCalibrate(args []string) error {
@@ -99,14 +154,18 @@ func cmdCalibrate(args []string) error {
 	data := fs.String("data", "../tau2-bench/data/tau2/results/final", "directory of tau2-bench result files")
 	out := fs.String("out", "results", "output directory")
 	reps := fs.Int("reps", 400, "resamples per experiment")
-	fs.Parse(args)
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
 	files, _ := filepath.Glob(filepath.Join(*data, "*.json"))
 	sort.Strings(files)
 	if len(files) == 0 {
 		return fmt.Errorf("no result files in %s", *data)
 	}
 	cfg := gate.DefaultConfig()
-	os.MkdirAll(*out, 0o755)
+	if err := os.MkdirAll(*out, 0o755); err != nil {
+		return err
+	}
 	res := map[string]any{"alpha": cfg.Alpha, "fail_margin": cfg.FailMargin, "pass_margin": cfg.PassMargin, "files": len(files)}
 
 	log.Printf("A/A on %d files", len(files))
@@ -193,6 +252,9 @@ func cmdCalibrate(args []string) error {
 		return err
 	}
 	res["rule_validity_default_mode_files"] = rv
-	b, _ := json.MarshalIndent(res, "", "  ")
+	b, err := json.MarshalIndent(res, "", "  ")
+	if err != nil {
+		return fmt.Errorf("encode calibration results: %w", err)
+	}
 	return os.WriteFile(filepath.Join(*out, "calibration.json"), b, 0o644)
 }
