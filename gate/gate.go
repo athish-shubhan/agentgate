@@ -62,12 +62,18 @@ type Report struct {
 	PassKB         stats.Floats                `json:"pass_k_b"`
 	InfraExcludedA int                         `json:"infra_excluded_a"`
 	InfraExcludedB int                         `json:"infra_excluded_b"`
-	Regressed      []TaskDelta                 `json:"regressed_tasks"`
-	Improved       int                         `json:"improved_tasks"`
-	RuleShift      map[string][2]int           `json:"rule_shift"`      // rule -> trials violating it in A, B
-	MDE            float64                     `json:"mde_80pct_power"` // 0 when fewer than 2 tasks are shared
-	CostA          float64                     `json:"cost_usd_a"`
-	CostB          float64                     `json:"cost_usd_b"`
+	// Tasks with outcomes in only one run (missing from the other, or all of
+	// their trials there were infrastructure failures). The comparison uses
+	// shared tasks only; these say what it left out.
+	OnlyInBase      int               `json:"tasks_only_in_base"`
+	OnlyInCandidate int               `json:"tasks_only_in_candidate"`
+	UnmatchedSample []string          `json:"unmatched_tasks_sample,omitempty"` // up to 5, sorted
+	Regressed       []TaskDelta       `json:"regressed_tasks"`
+	Improved        int               `json:"improved_tasks"`
+	RuleShift       map[string][2]int `json:"rule_shift"`      // rule -> trials violating it in A, B
+	MDE             float64           `json:"mde_80pct_power"` // 0 when fewer than 2 tasks are shared
+	CostA           float64           `json:"cost_usd_a"`
+	CostB           float64           `json:"cost_usd_b"`
 }
 
 // Outcomes turns trials into per-task outcomes, skipping infra failures.
@@ -114,6 +120,21 @@ func Compare(a, b trajectory.Run, cfg Config) Report {
 		RuleShift: map[string][2]int{}}
 	rep.Overall = stats.Paired(oa, ob, cfg.Alpha)
 	rep.Verdict = Decide(rep.Overall, cfg)
+	var unmatched []string
+	for _, k := range stats.SortedKeys(oa) {
+		if _, ok := ob[k]; !ok {
+			rep.OnlyInBase++
+			unmatched = append(unmatched, k)
+		}
+	}
+	for _, k := range stats.SortedKeys(ob) {
+		if _, ok := oa[k]; !ok {
+			rep.OnlyInCandidate++
+			unmatched = append(unmatched, k)
+		}
+	}
+	sort.Strings(unmatched)
+	rep.UnmatchedSample = unmatched[:min(5, len(unmatched))]
 	// per suite
 	suites := map[string]bool{}
 	for k := range oa {
@@ -302,6 +323,11 @@ func (r Report) Markdown(cfg Config) string {
 			fmt.Fprintf(&b, "| %s | %.0f%% | %.0f%% | %s |\n", t.Task, 100*t.RateA, 100*t.RateB, strings.Join(t.NewRules, ", "))
 		}
 		b.WriteString("\n")
+	}
+	if r.OnlyInBase+r.OnlyInCandidate > 0 {
+		fmt.Fprintf(&b, "**Not compared:** %d tasks have results only in `%s` and %d only in `%s` (missing, or every trial an "+
+			"infrastructure failure), for example %s. The verdict covers the %d shared tasks.\n\n",
+			r.OnlyInBase, r.Base, r.OnlyInCandidate, r.Candidate, "`"+strings.Join(r.UnmatchedSample, "`, `")+"`", r.Overall.Tasks)
 	}
 	if r.InfraExcludedA+r.InfraExcludedB > 0 {
 		fmt.Fprintf(&b, "Excluded as infrastructure failures: %d trials of A, %d of B.\n\n", r.InfraExcludedA, r.InfraExcludedB)
