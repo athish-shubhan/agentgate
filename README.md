@@ -6,7 +6,7 @@ Go; the only third-party modules are `lib/pq` (Postgres driver) and CloudWeGo He
 
 ## Results (measured; no model calls, all from published tau2-bench trials)
 
-Full tables: [`results/SUMMARY.md`](results/SUMMARY.md). Method: [`docs/METHOD.md`](docs/METHOD.md).
+Full tables: [`results/SUMMARY.md`](results/SUMMARY.md). Method: [`docs/METHOD.md`](docs/METHOD.md). Package layout: [`docs/architecture.md`](docs/architecture.md).
 
 | what | result |
 |---|---|

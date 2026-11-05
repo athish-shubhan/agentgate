@@ -181,3 +181,67 @@ func TestPGStore(t *testing.T) {
 	defer st.Close()
 	exercise(t, st)
 }
+
+// Error responses carry the right status and a JSON error body, on both
+// front ends' shared core.
+func TestErrorStatuses(t *testing.T) {
+	ts := httptest.NewServer((&Server{Store: NewMemStore(), Base: gate.DefaultConfig()}).Handler())
+	defer ts.Close()
+	req := func(method, path, body string) (int, map[string]any) {
+		t.Helper()
+		r, _ := http.NewRequest(method, ts.URL+path, strings.NewReader(body))
+		resp, err := http.DefaultClient.Do(r)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer func() { _ = resp.Body.Close() }()
+		var m map[string]any
+		_ = json.NewDecoder(resp.Body).Decode(&m)
+		return resp.StatusCode, m
+	}
+	cases := []struct {
+		method, path, body string
+		code               int
+	}{
+		{"GET", "/v1/reports/abc", "", 400},
+		{"GET", "/v1/reports/999", "", 404},
+		{"GET", "/v1/reports/999/comment", "", 404},
+		{"PUT", "/v1/runs/x?format=yaml", "{}", 400},
+		{"PUT", "/v1/runs/x?format=run", `{"name":"x","trials":[]}`, 400},
+		{"PUT", "/v1/runs/x?format=run", `{not json`, 400},
+		{"POST", "/v1/compare", `{not json`, 400},
+		{"POST", "/v1/compare", `{"base":"a","candidate":"b"}`, 404},
+		{"POST", "/v1/compare", `{"base":"a","candidate":"b","pass_margin":0,"fail_margin":0.1}`, 400},
+		{"POST", "/v1/compare", `{"base":"` + strings.Repeat("x", 2<<20) + `"}`, 413},
+	}
+	for _, c := range cases {
+		code, m := req(c.method, c.path, c.body)
+		if code != c.code || m["error"] == nil {
+			t.Errorf("%s %s: %d %v, want %d with an error message", c.method, c.path[:min(len(c.path), 40)], code, m, c.code)
+		}
+	}
+	if code, _ := req("GET", "/healthz", ""); code != 200 {
+		t.Fatalf("healthz %d", code)
+	}
+}
+
+func TestListReportsLimit(t *testing.T) {
+	s := &Server{Store: NewMemStore(), Base: gate.DefaultConfig()}
+	ctx := context.Background()
+	a, b := synthRun("a", flat(0.5, 10), 2), synthRun("b", flat(0.5, 10), 2)
+	ab, _ := json.Marshal(a)
+	bb, _ := json.Marshal(b)
+	s.PutRun(ctx, "a", "run", ab)
+	s.PutRun(ctx, "b", "run", bb)
+	for i := 0; i < 5; i++ {
+		if r := s.Compare(ctx, []byte(`{"base":"a","candidate":"b"}`)); r.Code != 200 {
+			t.Fatalf("compare: %+v", r)
+		}
+	}
+	for limit, want := range map[string]int{"2": 2, "": 5, "0": 5, "-3": 5, "junk": 5, "100000": 5} {
+		r := s.ListReports(ctx, limit)
+		if l := r.JSON.([]ReportInfo); len(l) != want {
+			t.Errorf("limit %q: %d reports, want %d", limit, len(l), want)
+		}
+	}
+}

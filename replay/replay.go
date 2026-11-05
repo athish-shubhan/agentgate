@@ -14,6 +14,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"sync"
 )
 
@@ -29,10 +30,24 @@ type Entry struct {
 	Tool   string          `json:"tool"`
 	Args   json.RawMessage `json:"args"`
 	Result json.RawMessage `json:"result,omitempty"`
-	Error  string          `json:"error,omitempty"`
+	// Text holds an upstream body that is not JSON. Stored in Result it made
+	// every later Save fail (json.RawMessage must be valid JSON).
+	Text  string `json:"text,omitempty"`
+	Error string `json:"error,omitempty"`
 }
 
-var ErrMiss = errors.New("replay: call not in cassette")
+// body is what a replayed call returns: the bytes the upstream sent.
+func (e Entry) body() json.RawMessage {
+	if e.Text != "" {
+		return json.RawMessage(e.Text)
+	}
+	return e.Result
+}
+
+var (
+	ErrMiss    = errors.New("replay: call not in cassette")
+	ErrBadArgs = errors.New("replay: tool arguments are not valid JSON")
+)
 
 type Cassette struct {
 	mu       sync.Mutex
@@ -58,10 +73,13 @@ func Load(path string, mode Mode) (*Cassette, error) {
 	defer f.Close()
 	sc := bufio.NewScanner(f)
 	sc.Buffer(make([]byte, 1<<20), 64<<20)
-	for sc.Scan() {
+	for line := 1; sc.Scan(); line++ {
+		if len(sc.Bytes()) == 0 {
+			continue
+		}
 		var e Entry
 		if err := json.Unmarshal(sc.Bytes(), &e); err != nil {
-			return nil, err
+			return nil, fmt.Errorf("%s:%d: %w", path, line, err)
 		}
 		k := key(e.Tool, e.Args)
 		c.entries[k] = append(c.entries[k], e)
@@ -70,24 +88,40 @@ func Load(path string, mode Mode) (*Cassette, error) {
 	return c, sc.Err()
 }
 
-func (c *Cassette) Save(path string) error {
+// Save writes the cassette atomically: to a temporary file next to path,
+// then renamed over it. It used to truncate path first, so an error while
+// writing (a full disk, an unencodable entry) left an empty cassette and
+// every recorded call was lost.
+func (c *Cassette) Save(path string) (err error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	f, err := os.Create(path)
+	f, err := os.CreateTemp(filepath.Dir(path), filepath.Base(path)+".tmp-*")
 	if err != nil {
 		return err
 	}
+	defer func() {
+		if err != nil {
+			_ = f.Close()
+			_ = os.Remove(f.Name())
+		}
+	}()
 	w := bufio.NewWriter(f)
 	enc := json.NewEncoder(w)
 	for _, e := range c.recorded {
-		if err := enc.Encode(e); err != nil {
+		if err = enc.Encode(e); err != nil {
 			return err
 		}
 	}
-	if err := w.Flush(); err != nil {
+	if err = w.Flush(); err != nil {
 		return err
 	}
-	return f.Close()
+	if err = f.Sync(); err != nil {
+		return err
+	}
+	if err = f.Close(); err != nil {
+		return err
+	}
+	return os.Rename(f.Name(), path)
 }
 
 // Canonical re-encodes JSON with sorted keys and no insignificant whitespace.
@@ -104,6 +138,10 @@ func key(tool string, args json.RawMessage) string { return tool + "\x00" + stri
 
 // Call serves a tool call from the cassette or from upstream, per the mode.
 func (c *Cassette) Call(tool string, args json.RawMessage, upstream func() (json.RawMessage, error)) (json.RawMessage, error) {
+	if !json.Valid(args) {
+		// it could be neither matched canonically nor saved
+		return nil, fmt.Errorf("%w: %s", ErrBadArgs, tool)
+	}
 	k := key(tool, args)
 	c.mu.Lock()
 	if c.mode != Record {
@@ -115,7 +153,7 @@ func (c *Cassette) Call(tool string, args json.RawMessage, upstream func() (json
 			if e.Error != "" {
 				return nil, errors.New(e.Error)
 			}
-			return e.Result, nil
+			return e.body(), nil
 		}
 		c.Misses++
 		if c.mode == Replay {
@@ -128,7 +166,12 @@ func (c *Cassette) Call(tool string, args json.RawMessage, upstream func() (json
 		return nil, fmt.Errorf("%w and no upstream: %s", ErrMiss, tool)
 	}
 	res, err := upstream()
-	e := Entry{Tool: tool, Args: Canonical(args), Result: res}
+	e := Entry{Tool: tool, Args: Canonical(args)}
+	if json.Valid(res) {
+		e.Result = res
+	} else {
+		e.Text = string(res)
+	}
 	if err != nil {
 		e.Error = err.Error()
 	}
