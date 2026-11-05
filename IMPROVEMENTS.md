@@ -173,3 +173,53 @@ The action job runs on GitHub in this PR's CI; locally the two cases exit 0 and 
 
 `calibrate/calibrate.go`, `calibrate/calibrate_test.go` (new), `stats/stats.go`, `gate/gate.go`, `action.yml`,
 `.github/workflows/ci.yml`, `results/calibration.json`, `README.md`, `IMPROVEMENTS.md`.
+
+## Round 3 (2026-11-05): tool cassette could be wiped by one text response; server error tests; architecture doc
+
+Stacked on round 2 (`improve/round-2`).
+
+### What changed
+
+1. **Bug: one non-JSON tool response wiped the whole cassette.** The replay proxy stored an upstream body as
+   `json.RawMessage`. If a tool server answered with plain text, every later `Save` failed in the JSON encoder,
+   and `Save` truncated the cassette file before writing, so the file was left at **0 bytes**:
+
+   ```
+   second Save err=json: error calling MarshalJSON for type json.RawMessage: invalid character 'O' looking for
+   beginning of value; file before 44 bytes, after 0 bytes
+   ```
+
+   Now a body that is not JSON is stored in a new `text` field and replayed byte for byte; `Save` writes a
+   temporary file next to the cassette, syncs it and renames it over the old one, so a failed save leaves the old
+   cassette intact and no temp file; `Load` names the bad line (`c.jsonl:3: ...`). Arguments that are not JSON are
+   rejected (HTTP 400 from the proxy, `ErrBadArgs` from `Call`): they could neither be matched canonically nor
+   saved. Existing cassettes load unchanged.
+2. **Server error responses tested**: bad and unknown report ids (400, 404), unknown upload format, empty or
+   malformed runs, malformed or oversized compare requests (400, 404, 413), margin validation, and the `limit`
+   parameter of `GET /v1/reports` (default 50, capped at 1000, junk ignored).
+3. **`docs/architecture.md`**: a mermaid diagram of the data flow from results files through `gate` to the PR
+   comment, the three front ends, and where `calibrate` and `replay` sit; a table of packages. Linked from the
+   README.
+
+### How it was verified
+
+```
+$ go test -count=1 -v ./... | grep -E '^--- ' | awk '{print $2}' | sort | uniq -c    # round 2 -> this round
+     28 PASS: -> 34 PASS:   (1 SKIP: TestPGStore without AGENTGATE_TEST_DSN)
+$ go test -race -count=1 ./...      # all ok
+$ golangci-lint run ./...           # 0 issues
+```
+
+Coverage: `replay` 80.0% -> 83.6%, `server` 52.4% -> 57.6%. New replay tests: text body saved and replayed,
+failed save keeps the old file, bad arguments, bad cassette line with its number, proxy returns 400 for non-JSON
+arguments.
+
+### Not verified
+
+Nothing open. The mermaid diagram was rendered locally with `@mermaid-js/mermaid-cli` 11.4.2 (`mmdc -i a.mmd -o a.png`)
+without errors. Calibration results are unaffected (no code on that path changed).
+
+### Files touched
+
+`replay/replay.go`, `replay/http.go`, `replay/replay_test.go`, `server/server_test.go`, `docs/architecture.md` (new),
+`README.md`, `IMPROVEMENTS.md`.

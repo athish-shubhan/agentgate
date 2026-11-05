@@ -34,6 +34,10 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if len(bytes.TrimSpace(args)) == 0 {
 		args = []byte("{}")
 	}
+	if !json.Valid(args) {
+		http.Error(w, "arguments must be a JSON body", http.StatusBadRequest)
+		return
+	}
 	var up func() (json.RawMessage, error)
 	if p.Upstream != "" {
 		up = func() (json.RawMessage, error) {
