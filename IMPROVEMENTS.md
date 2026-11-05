@@ -245,8 +245,8 @@ Stacked on round 3 (`improve/round-3`).
 
    Before, the comment only said "on 0 tasks".
 2. **Grader: typographic apostrophes.** The `write_without_confirmation` rule split words on anything but
-   `a-z`, `0-9` and `'`, so a user turn with `’` (frequent in model-written text: 4,251 of the 16,439 user turns
-   before a write call in the published tau2-bench data) could never match `that's right`. `’` is now read as `'`.
+   `a-z`, `0-9` and `'`, so a user turn with `’` (frequent in model-written text: in the published tau2-bench
+   data, 4,251 of the 16,439 write calls follow a user turn containing it) could never match `that's right`. `’` is now read as `'`.
    Measured on the published data: **0 of 16,439** confirmation decisions change (those turns confirm with another
    word or not at all), so section 7 of `SUMMARY.md` is unaffected.
 3. **Looked at and not changed: negation.** "no, don't proceed" counts as a confirmation because it contains
