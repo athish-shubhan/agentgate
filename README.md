@@ -2,7 +2,7 @@
 
 A regression gate for LLM agents. Given results for agent version A (main) and B (a pull request) on the same task suite, AgentGate decides **PASS / FAIL / INCONCLUSIVE** with a controlled false-alarm rate, says how big a drop the data could have detected, and writes a PR comment that points at the tasks and behaviours that got worse.
 
-Go, no dependencies beyond `lib/pq`. CLI, HTTP service (Postgres or in-memory), GitHub composite action, and a calibration harness that measures the gate on 10,832 published tau2-bench trials.
+Go; third-party dependencies are `lib/pq` (Postgres) and CloudWeGo Hertz (optional second HTTP front end). CLI, HTTP service (Postgres or in-memory), GitHub composite action, and a calibration harness that measures the gate on 10,832 published tau2-bench trials.
 
 ## Results (measured; no model calls, all from published tau2-bench trials)
 
@@ -17,7 +17,7 @@ Full tables: [`results/SUMMARY.md`](results/SUMMARY.md). Method: [`docs/METHOD.m
 | Real swap gpt-4.1 -> gpt-4.1-mini, retail | FAIL, -8.1 points (90% CI -12.5 to -3.8) |
 | Real swap gpt-4.1 -> gpt-4.1-mini, telecom | PASS: mini is *better* (+9.7 points) |
 | Trials for 98% power on a 10-point drop (retail, 114 tasks) | 4 per task; sequential gate: **2.44** on average (39% fewer) |
-| Gate cost, retail, 4 trials x 114 tasks, candidate side | $26.52 agent cost, 8 trial-hours; sequential: $16.14 |
+| Gate cost estimate, retail, 4 trials x 114 tasks, candidate side | $26.52 agent cost (from recorded per-trial costs), 8 trial-hours; sequential: $16.14 |
 
 ![injection power](results/injection_power.png)
 ![power curve](results/power_curve.png)
@@ -54,7 +54,7 @@ bin/agentgate compare -base main.json -cand pr.json -md comment.md -json report.
 # any harness: write examples/run.json format and use -format run
 bin/agentgate compare -format run -base main.json -cand pr.json
 
-# reproduce results/ (about a minute on 2 vCPUs)
+# reproduce results/ (about a minute on a 2-vCPU machine; timing not re-measured elsewhere)
 git clone https://github.com/sierra-research/tau2-bench ../tau2-bench
 bin/agentgate calibrate -data ../tau2-bench/data/tau2/results/final -out results
 python3 bench/plot.py results/calibration.json results
@@ -73,28 +73,13 @@ bin/agentgate replay -mode replay-or-record -cassette tools.jsonl -upstream http
 
 Example PR comment (real data): [`results/example_pr_comment.md`](results/example_pr_comment.md).
 
-Tests: `go test ./...` (set `AGENTGATE_TEST_DSN` to also run the Postgres store test).
+Tests: `go test -race ./...` (set `AGENTGATE_TEST_DSN` to also run the Postgres store test).
 
 ## Honest scope
 
 - **No new agent runs.** Every number is a reanalysis or resample of published tau2-bench trials (4 models, 4 trials per task, user simulator gpt-4.1). Injected regressions are simulated by flipping recorded passes to failures; the "tool schema change" and "dropped policy line" names describe what the injection models, not a real prompt edit that was run.
-- **Suites:** tau2-bench only. Terminal-Bench and network-ops suites from the spec are not built; any harness can feed the gate through the JSON format.
+- **Suites:** tau2-bench only. No other suites (e.g. Terminal-Bench) are built; any harness can feed the gate through the JSON format.
 - **Model-graded rubrics:** not implemented. Trajectory rules are deterministic and validated against reward (`SUMMARY.md` section 7).
 - **GitHub action:** written but not exercised on GitHub; it runs the same `compare` command used here.
-- **Service:** two HTTP front ends over one transport-neutral core: `net/http` and CloudWeGo Hertz (`agentgate serve -http hertz`); the same test suite runs against both. No Kitex/Thrift API. Postgres store tested against Postgres 16 locally.
-- **Coze Loop contribution:** not done. The natural upstream piece is a paired-comparison / pass^k experiment report in Coze Loop's evaluation module. Do not claim it until a PR is merged.
+- **Service:** no authentication; it binds to 127.0.0.1 by default, so put it behind your own auth proxy before exposing it. Run names are limited to 128 characters, and the in-memory store is unbounded. Two HTTP front ends over one transport-neutral core: `net/http` and CloudWeGo Hertz (`agentgate serve -http hertz`); the same test suite runs against both. No Kitex/Thrift API. Postgres store tested against Postgres 16 locally.
 - Cost per gate covers agent tokens only (user-simulator cost excluded). The "15 minutes with 32 sandboxes" figure is arithmetic on recorded trial durations, not a measured run.
-
-## Resume bullets (numbers from `results/`)
-
-- Built AgentGate, a Go regression gate for LLM agents (paired task-clustered t-test, O'Brien-Fleming sequential stopping, pass^k, power analysis) with trajectory rule graders, tool-call record/replay, a Postgres-backed HTTP service (net/http or CloudWeGo Hertz) and a GitHub Action.
-- Calibrated on 10,832 published tau2-bench trials: 4.7% A/A false-alarm rate (target 5%); caught 100% of injected tool-schema breaks and 96% of policy regressions at 2 trials per task, and 69% vs 52% for a naive unpaired test on a weaker-model injection.
-- Showed by power analysis that a 10-point regression needs 4 trials per task on a 114-task suite, and cut that to 2.4 on average (39% fewer trials and agent cost) with sequential stopping at equal power.
-
-## Interview defence
-
-- **Why paired?** Task difficulty is shared by A and B and dominates the variance. Differencing per task cancels it; the unit of independence is the task, so the SE comes from the spread of per-task differences.
-- **MDE at n trials?** `(z_{1-a} + z_{0.8}) * sd(d) / sqrt(tasks)`; printed in every comment. 6.5 points for gpt-4.1 vs mini on retail at 4 trials. More trials shrink `sd(d)` only down to the between-task floor; more tasks shrink it as `1/sqrt(n)`.
-- **Model-graded rubrics honest?** Not built. The same validity check as section 7 (lift against final-state reward) plus kappa against a human-labelled sample, re-run whenever the judge prompt or model changes.
-- **Simulated user as a variance source?** Repetition and pairing handle it the same as agent variance. The no-user comparison suggests it matters for some models (o4-mini) and not others (gpt-4.1).
-- **Why not just a threshold on pass rate?** With 2 trials per task an unchanged agent moves by several points between runs; a fixed threshold either fires on noise or misses real drops. The A/A experiment measures exactly that.

@@ -82,6 +82,9 @@ var (
 )
 
 func (s *Server) PutRun(ctx context.Context, name, format string, b []byte) Resp {
+	if name == "" || len(name) > 128 {
+		return errResp(fmt.Errorf("%w: run name must be 1 to 128 characters", errBadRequest))
+	}
 	var run trajectory.Run
 	var err error
 	switch format {

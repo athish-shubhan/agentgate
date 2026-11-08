@@ -72,3 +72,26 @@ func TestHTTPProxyRecordsAndReplays(t *testing.T) {
 		t.Fatalf("replay: %s (upstream calls %d)", b, calls)
 	}
 }
+
+func TestProxyRejectsOversizedBodyAndBadName(t *testing.T) {
+	p := &Proxy{C: New(Replay)}
+	srv := httptest.NewServer(p)
+	defer srv.Close()
+	big := strings.NewReader(strings.Repeat("x", maxBody+1))
+	resp, err := http.Post(srv.URL+"/tools/get", "application/json", big)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusRequestEntityTooLarge {
+		t.Fatalf("oversized body: got %d", resp.StatusCode)
+	}
+	resp, err = http.Post(srv.URL+"/tools/a/b", "application/json", strings.NewReader("{}"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusBadRequest {
+		t.Fatalf("bad tool name: got %d", resp.StatusCode)
+	}
+}

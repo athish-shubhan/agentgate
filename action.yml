@@ -40,11 +40,18 @@ runs:
     - name: compare
       id: gate
       shell: bash
+      env:
+        IN_FORMAT: ${{ inputs.format }}
+        IN_BASE: ${{ inputs.base }}
+        IN_CAND: ${{ inputs.candidate }}
+        IN_ALPHA: ${{ inputs.alpha }}
+        IN_FAIL: ${{ inputs.fail-margin }}
+        IN_PASS: ${{ inputs.pass-margin }}
       run: |
         set +e
-        "$RUNNER_TEMP/agentgate" compare -format "${{ inputs.format }}" \
-          -base "${{ inputs.base }}" -cand "${{ inputs.candidate }}" \
-          -alpha "${{ inputs.alpha }}" -fail-margin "${{ inputs.fail-margin }}" -pass-margin "${{ inputs.pass-margin }}" \
+        "$RUNNER_TEMP/agentgate" compare -format "$IN_FORMAT" \
+          -base "$IN_BASE" -cand "$IN_CAND" \
+          -alpha "$IN_ALPHA" -fail-margin "$IN_FAIL" -pass-margin "$IN_PASS" \
           -md "$RUNNER_TEMP/agentgate.md" -json "$RUNNER_TEMP/agentgate.json" > /dev/null
         code=$?
         echo "exit=$code" >> "$GITHUB_OUTPUT"
@@ -55,9 +62,12 @@ runs:
       shell: bash
       env:
         GH_TOKEN: ${{ github.token }}
+        PR: ${{ github.event.pull_request.number }}
       run: |
-        gh pr comment "${{ github.event.pull_request.number }}" --edit-last --body-file "$RUNNER_TEMP/agentgate.md" \
-          || gh pr comment "${{ github.event.pull_request.number }}" --body-file "$RUNNER_TEMP/agentgate.md"
+        gh pr comment "$PR" --edit-last --body-file "$RUNNER_TEMP/agentgate.md" \
+          || gh pr comment "$PR" --body-file "$RUNNER_TEMP/agentgate.md"
     - name: verdict
       shell: bash
-      run: exit ${{ steps.gate.outputs.exit }}
+      env:
+        GATE_EXIT: ${{ steps.gate.outputs.exit }}
+      run: exit "$GATE_EXIT"
