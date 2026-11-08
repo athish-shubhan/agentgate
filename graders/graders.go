@@ -90,8 +90,11 @@ func isWrite(r Rules, name string) bool {
 
 // confirmed matches whole words or phrases ("ok" must not match "book").
 func confirmed(r Rules, user string) bool {
+	// Typographic apostrophes (common in model-written text) would split
+	// "that’s" into "that" and "s", so "that’s right" could never match.
+	user = strings.ReplaceAll(user, "\u2019", "'")
 	norm := " " + strings.Join(strings.FieldsFunc(user, func(c rune) bool {
-		return !(c >= 'a' && c <= 'z' || c >= '0' && c <= '9' || c == '\'')
+		return (c < 'a' || c > 'z') && (c < '0' || c > '9') && c != '\''
 	}), " ") + " "
 	for _, w := range r.ConfirmWords {
 		if strings.Contains(norm, " "+w+" ") {

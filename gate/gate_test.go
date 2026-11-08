@@ -3,6 +3,7 @@ package gate
 import (
 	"fmt"
 	"math/rand/v2"
+	"strings"
 	"testing"
 
 	"agentgate/stats"
@@ -85,5 +86,31 @@ func TestAAFalseAlarmNearAlpha(t *testing.T) {
 	}
 	if rate := float64(fails) / reps; rate > 0.09 {
 		t.Fatalf("A/A false FAIL rate %.3f", rate)
+	}
+}
+
+// Tasks present in only one run are left out of the paired comparison; the
+// report must say so instead of comparing the overlap silently.
+func TestCompareReportsUnmatchedTasks(t *testing.T) {
+	p := probs(40, 9)
+	a := run("a", p, 0, 2, 10)
+	b := run("b", p[:30], 0, 2, 11) // candidate lost tasks 30..39
+	b.Trials = append(b.Trials, trajectory.Trial{Suite: "s", Task: "new-task", Trial: 0, Pass: true})
+	rep := Compare(a, b, DefaultConfig())
+	if rep.OnlyInBase != 10 || rep.OnlyInCandidate != 1 || rep.Overall.Tasks != 30 {
+		t.Fatalf("only base %d, only cand %d, shared %d", rep.OnlyInBase, rep.OnlyInCandidate, rep.Overall.Tasks)
+	}
+	if len(rep.UnmatchedSample) != 5 || rep.UnmatchedSample[0] != "s/30" {
+		t.Fatalf("sample %v", rep.UnmatchedSample)
+	}
+	md := rep.Markdown(DefaultConfig())
+	if !strings.Contains(md, "**Not compared:** 10 tasks have results only in `a` and 1 only in `b`") ||
+		!strings.Contains(md, "covers the 30 shared tasks") {
+		t.Fatalf("comment:\n%s", md)
+	}
+	full := Compare(a, run("b", p, 0, 2, 12), DefaultConfig())
+	if full.OnlyInBase+full.OnlyInCandidate != 0 || full.UnmatchedSample != nil ||
+		strings.Contains(full.Markdown(DefaultConfig()), "Not compared") {
+		t.Fatalf("matched runs must not warn: %+v", full)
 	}
 }

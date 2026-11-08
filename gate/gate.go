@@ -58,16 +58,22 @@ type Report struct {
 	Verdict        Verdict                     `json:"verdict"`
 	Overall        stats.Comparison            `json:"overall"`
 	PerSuite       map[string]stats.Comparison `json:"per_suite"`
-	PassKA         []float64                   `json:"pass_k_a"`
-	PassKB         []float64                   `json:"pass_k_b"`
+	PassKA         stats.Floats                `json:"pass_k_a"` // NaN (JSON null) when no task has k trials
+	PassKB         stats.Floats                `json:"pass_k_b"`
 	InfraExcludedA int                         `json:"infra_excluded_a"`
 	InfraExcludedB int                         `json:"infra_excluded_b"`
-	Regressed      []TaskDelta                 `json:"regressed_tasks"`
-	Improved       int                         `json:"improved_tasks"`
-	RuleShift      map[string][2]int           `json:"rule_shift"` // rule -> trials violating it in A, B
-	MDE            float64                     `json:"mde_80pct_power"`
-	CostA          float64                     `json:"cost_usd_a"`
-	CostB          float64                     `json:"cost_usd_b"`
+	// Tasks with outcomes in only one run (missing from the other, or all of
+	// their trials there were infrastructure failures). The comparison uses
+	// shared tasks only; these say what it left out.
+	OnlyInBase      int               `json:"tasks_only_in_base"`
+	OnlyInCandidate int               `json:"tasks_only_in_candidate"`
+	UnmatchedSample []string          `json:"unmatched_tasks_sample,omitempty"` // up to 5, sorted
+	Regressed       []TaskDelta       `json:"regressed_tasks"`
+	Improved        int               `json:"improved_tasks"`
+	RuleShift       map[string][2]int `json:"rule_shift"`      // rule -> trials violating it in A, B
+	MDE             float64           `json:"mde_80pct_power"` // 0 when fewer than 2 tasks are shared
+	CostA           float64           `json:"cost_usd_a"`
+	CostB           float64           `json:"cost_usd_b"`
 }
 
 // Outcomes turns trials into per-task outcomes, skipping infra failures.
@@ -114,6 +120,21 @@ func Compare(a, b trajectory.Run, cfg Config) Report {
 		RuleShift: map[string][2]int{}}
 	rep.Overall = stats.Paired(oa, ob, cfg.Alpha)
 	rep.Verdict = Decide(rep.Overall, cfg)
+	var unmatched []string
+	for _, k := range stats.SortedKeys(oa) {
+		if _, ok := ob[k]; !ok {
+			rep.OnlyInBase++
+			unmatched = append(unmatched, k)
+		}
+	}
+	for _, k := range stats.SortedKeys(ob) {
+		if _, ok := oa[k]; !ok {
+			rep.OnlyInCandidate++
+			unmatched = append(unmatched, k)
+		}
+	}
+	sort.Strings(unmatched)
+	rep.UnmatchedSample = unmatched[:min(5, len(unmatched))]
 	// per suite
 	suites := map[string]bool{}
 	for k := range oa {
@@ -139,7 +160,8 @@ func Compare(a, b trajectory.Run, cfg Config) Report {
 	}
 	// power: smallest drop this many tasks can detect at 80% power
 	var ds []float64
-	for k, x := range oa {
+	for _, k := range stats.SortedKeys(oa) {
+		x := oa[k]
 		if y, ok := ob[k]; ok {
 			ds = append(ds, y.Rate()-x.Rate())
 		}
@@ -228,8 +250,12 @@ func (r Report) Markdown(cfg Config) string {
 	fmt.Fprintf(&b, "### AgentGate: %s\n\n", icon)
 	fmt.Fprintf(&b, "`%s` vs `%s` on %d tasks. Pass rate %.1f%% -> %.1f%% (%+.1f points, %.0f%% CI %+.1f to %+.1f, one-sided p = %.3g).\n\n",
 		r.Base, r.Candidate, o.Tasks, 100*o.RateA, 100*o.RateB, 100*o.Diff, 100*(1-2*cfg.Alpha), 100*o.CILow, 100*o.CIHigh, o.PRegress)
+	mde := "n/a (fewer than 2 shared tasks)"
+	if o.Tasks >= 2 {
+		mde = fmt.Sprintf("%.1f points", 100*r.MDE)
+	}
 	fmt.Fprintf(&b, "Rule: FAIL if the whole interval is below %s points; PASS if it is entirely above %s points; otherwise INCONCLUSIVE. "+
-		"With these tasks the smallest drop detectable at 80%% power is %.1f points.\n\n", signedPts(-cfg.FailMargin), signedPts(-cfg.PassMargin), 100*r.MDE)
+		"With these tasks the smallest drop detectable at 80%% power is %s.\n\n", signedPts(-cfg.FailMargin), signedPts(-cfg.PassMargin), mde)
 	b.WriteString("| suite | tasks | A | B | diff | CI |\n|---|---|---|---|---|---|\n")
 	var ss []string
 	for s := range r.PerSuite {
@@ -247,9 +273,9 @@ func (r Report) Markdown(cfg Config) string {
 	for k := range r.PassKA {
 		hdr = append(hdr, fmt.Sprintf("pass^%d", k+1))
 		sep = append(sep, "---")
-		ca = append(ca, fmt.Sprintf("%.3f", r.PassKA[k]))
+		ca = append(ca, fmtRate(r.PassKA[k]))
 		if k < len(r.PassKB) {
-			cb = append(cb, fmt.Sprintf("%.3f", r.PassKB[k]))
+			cb = append(cb, fmtRate(r.PassKB[k]))
 		}
 	}
 	b.WriteString("\n")
@@ -298,6 +324,11 @@ func (r Report) Markdown(cfg Config) string {
 		}
 		b.WriteString("\n")
 	}
+	if r.OnlyInBase+r.OnlyInCandidate > 0 {
+		fmt.Fprintf(&b, "**Not compared:** %d tasks have results only in `%s` and %d only in `%s` (missing, or every trial an "+
+			"infrastructure failure), for example %s. The verdict covers the %d shared tasks.\n\n",
+			r.OnlyInBase, r.Base, r.OnlyInCandidate, r.Candidate, "`"+strings.Join(r.UnmatchedSample, "`, `")+"`", r.Overall.Tasks)
+	}
 	if r.InfraExcludedA+r.InfraExcludedB > 0 {
 		fmt.Fprintf(&b, "Excluded as infrastructure failures: %d trials of A, %d of B.\n\n", r.InfraExcludedA, r.InfraExcludedB)
 	}
@@ -305,6 +336,15 @@ func (r Report) Markdown(cfg Config) string {
 		fmt.Fprintf(&b, "Agent cost: $%.2f -> $%.2f.\n", r.CostA, r.CostB)
 	}
 	return b.String()
+}
+
+// fmtRate prints a rate with three decimals, or "n/a" when it is undefined
+// (pass^k with no task that has k trials).
+func fmtRate(x float64) string {
+	if math.IsNaN(x) {
+		return "n/a"
+	}
+	return fmt.Sprintf("%.3f", x)
 }
 
 // signedPts formats a fraction as signed points without printing "-0.0".

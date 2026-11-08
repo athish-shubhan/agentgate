@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
@@ -16,8 +15,8 @@ func hwrite(c *app.RequestContext, r Resp) {
 		c.Data(r.Code, "text/markdown; charset=utf-8", []byte(r.Text))
 		return
 	}
-	b, _ := json.MarshalIndent(r.JSON, "", "  ")
-	c.Data(r.Code, "application/json", append(b, '\n'))
+	code, b := encodeJSON(r)
+	c.Data(code, "application/json", b)
 }
 
 // HertzEngine builds the Hertz server without starting it (tests use it).

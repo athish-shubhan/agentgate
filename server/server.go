@@ -42,7 +42,7 @@ type Server struct {
 
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
-	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) { io.WriteString(w, "ok\n") })
+	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) { _, _ = io.WriteString(w, "ok\n") })
 	mux.HandleFunc("PUT /v1/runs/{name}", s.putRun)
 	mux.HandleFunc("GET /v1/runs", s.listRuns)
 	mux.HandleFunc("POST /v1/compare", s.compare)
@@ -198,14 +198,25 @@ func write(w http.ResponseWriter, r Resp) {
 	if r.Text != "" {
 		w.Header().Set("Content-Type", "text/markdown; charset=utf-8")
 		w.WriteHeader(r.Code)
-		io.WriteString(w, r.Text)
+		_, _ = io.WriteString(w, r.Text)
 		return
 	}
+	code, b := encodeJSON(r)
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(r.Code)
-	enc := json.NewEncoder(w)
-	enc.SetIndent("", "  ")
-	enc.Encode(r.JSON)
+	w.WriteHeader(code)
+	_, _ = w.Write(b)
+}
+
+// encodeJSON renders r.JSON before any header is written, so an encoding
+// failure becomes a 500 with an error body instead of a 200 with no body.
+func encodeJSON(r Resp) (int, []byte) {
+	b, err := json.MarshalIndent(r.JSON, "", "  ")
+	if err != nil {
+		log.Printf("encode response: %v", err)
+		b, _ = json.Marshal(map[string]string{"error": "encode response: " + err.Error()})
+		return http.StatusInternalServerError, append(b, '\n')
+	}
+	return r.Code, append(b, '\n')
 }
 
 func readBody(w http.ResponseWriter, r *http.Request, max int64) ([]byte, error) {
@@ -250,7 +261,9 @@ func Main(args []string) error {
 	addr := fs.String("addr", "127.0.0.1:8080", "listen address")
 	front := fs.String("http", "std", "HTTP front end: std (net/http) | hertz (CloudWeGo Hertz)")
 	dsn := fs.String("dsn", os.Getenv("AGENTGATE_DSN"), "Postgres DSN; empty keeps everything in memory")
-	fs.Parse(args)
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
 	ctx := context.Background()
 	var st Store = NewMemStore()
 	if *dsn != "" {
@@ -283,7 +296,9 @@ func Main(args []string) error {
 		<-ch
 		sctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 		defer cancel()
-		srv.Shutdown(sctx)
+		if err := srv.Shutdown(sctx); err != nil {
+			log.Printf("shutdown: %v", err)
+		}
 	}()
 	log.Printf("agentgate serving on %s", *addr)
 	if err := srv.ListenAndServe(); err != http.ErrServerClosed {

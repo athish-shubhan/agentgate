@@ -2,6 +2,7 @@ package graders
 
 import (
 	"encoding/json"
+	"strings"
 	"testing"
 
 	"agentgate/trajectory"
@@ -42,5 +43,20 @@ func TestRules(t *testing.T) {
 	}
 	if n != 1 {
 		t.Fatalf("only the unconfirmed booking should be flagged, got %d: %+v", n, v)
+	}
+}
+
+// Model-written user turns use typographic apostrophes; "that’s right" must
+// count as confirmation like "that's right".
+func TestConfirmationWithTypographicApostrophe(t *testing.T) {
+	r := DefaultRules()
+	r.ConfirmWords = []string{"that's right"}
+	for _, u := range []string{"That’s right, go on", "that's right"} {
+		if !confirmed(r, strings.ToLower(u)) {
+			t.Errorf("%q not counted as confirmation", u)
+		}
+	}
+	if confirmed(r, "that is wrong") {
+		t.Error("false positive")
 	}
 }

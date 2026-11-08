@@ -47,7 +47,8 @@ type Comparison struct {
 // Paired compares B to A over the tasks both ran. alpha is one-sided.
 func Paired(a, b map[string]TaskOutcome, alpha float64) Comparison {
 	var ds, ra, rb []float64
-	for k, x := range a {
+	for _, k := range SortedKeys(a) { // fixed order: float sums are reproducible bit for bit
+		x := a[k]
 		y, ok := b[k]
 		if !ok || x.Trials == 0 || y.Trials == 0 {
 			continue
@@ -110,7 +111,8 @@ func NaiveUnpaired(a, b map[string]TaskOutcome, alpha float64) Comparison {
 func PassHatK(tasks map[string]TaskOutcome, k int) float64 {
 	var s float64
 	n := 0
-	for _, t := range tasks {
+	for _, key := range SortedKeys(tasks) {
+		t := tasks[key]
 		if t.Trials < k {
 			continue
 		}
@@ -204,6 +206,17 @@ func CohenKappa(a, b []bool) float64 {
 }
 
 // ---- small numeric helpers (no external dependencies)
+
+// SortedKeys returns m's keys in increasing order. Summing floats in map
+// iteration order makes results differ in the last bits from run to run.
+func SortedKeys[V any](m map[string]V) []string {
+	out := make([]string, 0, len(m))
+	for k := range m {
+		out = append(out, k)
+	}
+	sort.Strings(out)
+	return out
+}
 
 func Mean(x []float64) float64 {
 	if len(x) == 0 {

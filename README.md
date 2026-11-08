@@ -6,7 +6,7 @@ Go; third-party dependencies are `lib/pq` (Postgres) and CloudWeGo Hertz (option
 
 ## Results (measured; no model calls, all from published tau2-bench trials)
 
-Full tables: [`results/SUMMARY.md`](results/SUMMARY.md). Method: [`docs/METHOD.md`](docs/METHOD.md).
+Full tables: [`results/SUMMARY.md`](results/SUMMARY.md). Method: [`docs/METHOD.md`](docs/METHOD.md). Package layout: [`docs/architecture.md`](docs/architecture.md).
 
 | what | result |
 |---|---|
@@ -43,20 +43,34 @@ action.yml   GitHub composite action (build, compare, comment, fail on FAIL)
 bench/plot.py  results/calibration.json -> figures + SUMMARY.md
 ```
 
+## Quick start
+
+Needs Go 1.24+. From a clean clone, no data download:
+
+```
+git clone https://github.com/athish-shubhan/agentgate && cd agentgate
+go test ./...
+go build -o bin/agentgate ./cmd/agentgate
+bin/agentgate compare -format run -base examples/run.json -cand examples/run.json -json report.json
+```
+
+`examples/run.json` has one task, so the gate prints INCONCLUSIVE (it never decides on fewer than 2 tasks). Exit codes of `compare`: **0** PASS or INCONCLUSIVE, **1** FAIL (regression), **2** usage or input error (missing file, wrong `-format`, no trials, unwritable output), so CI can tell a regression from a broken pipeline. Quantities that are undefined (pass^k with fewer than k trials per task, the SE with one shared task) are `null` in the JSON report and `n/a` in the comment.
+
 ## Usage
 
 ```
 go build -o bin/agentgate ./cmd/agentgate
 
-# gate two tau2-bench result files (exit code 1 on FAIL)
+# gate two tau2-bench result files (exit code 1 on FAIL, 2 on bad input)
 bin/agentgate compare -base main.json -cand pr.json -md comment.md -json report.json
 
 # any harness: write examples/run.json format and use -format run
 bin/agentgate compare -format run -base main.json -cand pr.json
 
-# reproduce results/ (about a minute on a 2-vCPU machine; timing not re-measured elsewhere)
+# reproduce results/ (about a minute on 2 vCPUs); calibration.json comes out byte-identical
 git clone https://github.com/sierra-research/tau2-bench ../tau2-bench
-bin/agentgate calibrate -data ../tau2-bench/data/tau2/results/final -out results
+bin/agentgate calibrate -data ../tau2-bench/data/tau2/results/final -out /tmp/recal
+cmp results/calibration.json /tmp/recal/calibration.json
 python3 bench/plot.py results/calibration.json results
 
 # service
@@ -73,13 +87,13 @@ bin/agentgate replay -mode replay-or-record -cassette tools.jsonl -upstream http
 
 Example PR comment (real data): [`results/example_pr_comment.md`](results/example_pr_comment.md).
 
-Tests: `go test -race ./...` (set `AGENTGATE_TEST_DSN` to also run the Postgres store test).
+Tests: `go test -race ./...` (set `AGENTGATE_TEST_DSN` to also run the Postgres store test). CI (`.github/workflows/ci.yml`) runs gofmt, `go mod tidy -diff`, `go vet`, `go test -race` against a Postgres 16 service, and golangci-lint on every pull request.
 
 ## Honest scope
 
 - **No new agent runs.** Every number is a reanalysis or resample of published tau2-bench trials (4 models, 4 trials per task, user simulator gpt-4.1). Injected regressions are simulated by flipping recorded passes to failures; the "tool schema change" and "dropped policy line" names describe what the injection models, not a real prompt edit that was run.
 - **Suites:** tau2-bench only. No other suites (e.g. Terminal-Bench) are built; any harness can feed the gate through the JSON format.
 - **Model-graded rubrics:** not implemented. Trajectory rules are deterministic and validated against reward (`SUMMARY.md` section 7).
-- **GitHub action:** written but not exercised on GitHub; it runs the same `compare` command used here.
+- **GitHub action:** exercised in this repo's CI (`action` job: a no-op comparison of `examples/run.json`, and a missing file reported as `ERROR`), not yet on a real agent eval; it runs the same `compare` command used here.
 - **Service:** no authentication; it binds to 127.0.0.1 by default, so put it behind your own auth proxy before exposing it. Run names are limited to 128 characters, and the in-memory store is unbounded. Two HTTP front ends over one transport-neutral core: `net/http` and CloudWeGo Hertz (`agentgate serve -http hertz`); the same test suite runs against both. No Kitex/Thrift API. Postgres store tested against Postgres 16 locally.
 - Cost per gate covers agent tokens only (user-simulator cost excluded). The "15 minutes with 32 sandboxes" figure is arithmetic on recorded trial durations, not a measured run.
